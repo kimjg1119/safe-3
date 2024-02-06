@@ -1,19 +1,17 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer
 
-import kr.ac.kaist.safe.nodes.cfg.{ CFG, FunctionId }
+import kr.ac.kaist.safe.nodes.cfg.{CFG, FunctionId}
 import kr.ac.kaist.safe.errors.error._
-import kr.ac.kaist.safe.util.{ PredAllocSite, HashMap }
+import kr.ac.kaist.safe.util.{PredAllocSite}
 
 package object domain {
   ////////////////////////////////////////////////////////////////
@@ -48,7 +46,8 @@ package object domain {
   private val dec1 = "[0-9]+\\.[0-9]*(" + exp + ")?"
   private val dec2 = "\\.[0-9]+(" + exp + ")?"
   private val dec3 = "[0-9]+(" + exp + ")?"
-  private val dec = "([+-]?(Infinity|(" + dec1 + ")|(" + dec2 + ")|(" + dec3 + ")))"
+  private val dec =
+    "([+-]?(Infinity|(" + dec1 + ")|(" + dec2 + ")|(" + dec3 + ")))"
   private val numRegexp = ("NaN|(" + hex + ")|(" + dec + ")").r.pattern
 
   def isHex(str: String): Boolean =
@@ -63,7 +62,8 @@ package object domain {
   // Boolean <-> Bool
   implicit def bool2boolean(b: Bool): Boolean = b.bool
   implicit def boolean2bool(b: Boolean): Bool = Bool(b)
-  implicit def booleanSet2bool(set: Set[Boolean]): Set[Bool] = set.map(boolean2bool)
+  implicit def booleanSet2bool(set: Set[Boolean]): Set[Bool] =
+    set.map(boolean2bool)
 
   // Double <-> Num
   implicit def num2double(num: Num): Double = num.num
@@ -79,7 +79,8 @@ package object domain {
   // implicit conversion for abstract domains
   ////////////////////////////////////////////////////////////////
   // primitive abstract domains -> AbsPValue
-  implicit def undef2pv(undef: AbsUndef): AbsPValue = AbsPValue(undefval = undef)
+  implicit def undef2pv(undef: AbsUndef): AbsPValue =
+    AbsPValue(undefval = undef)
   implicit def null2pv(x: AbsNull): AbsPValue = AbsPValue(nullval = x)
   implicit def bool2pv(b: AbsBool): AbsPValue = AbsPValue(boolval = b)
   implicit def num2pv(num: AbsNum): AbsPValue = AbsPValue(numval = num)
@@ -89,16 +90,26 @@ package object domain {
   implicit def loc2locset(loc: Loc): LocSet = LocSet(loc)
 
   // AbsPValue -> AbsValue
-  implicit def pv2v[T <% AbsPValue](pv: T): AbsValue = AbsValue(pv)
+  // implicit def pv2v[T <% AbsPValue](pv: T): AbsValue = AbsValue(pv)
+  implicit def pv2v[T](pv: T)(implicit ev: T => AbsPValue): AbsValue = AbsValue(
+    ev(pv)
+  )
 
   // LocSet -> AbsValue
-  implicit def locset2v[T <% LocSet](loc: T): AbsValue = AbsValue(loc)
+  // implicit def locset2v[T <% LocSet](loc: T): AbsValue = AbsValue(loc)
+  implicit def locset2v[T](loc: T)(implicit ev: T => LocSet): AbsValue =
+    AbsValue(ev(loc))
 
   // AbsValue -> AbsIValue
-  implicit def v2iv[T <% AbsValue](v: T): AbsIValue = AbsIValue(v)
+  // implicit def v2iv[T <% AbsValue](v: T): AbsIValue = AbsIValue(v)
+  implicit def v2iv[T](v: T)(implicit ev: T => AbsValue): AbsIValue = AbsIValue(
+    ev(v)
+  )
 
   // AbsFId -> AbsIValue
-  implicit def fid2iv[T <% AbsFId](fid: T): AbsIValue = AbsIValue(fid)
+  // implicit def fid2iv[T <% AbsFId](fid: T): AbsIValue = AbsIValue(fid)
+  implicit def fid2iv[T](fid: T)(implicit ev: T => AbsFId): AbsIValue =
+    AbsIValue(ev(fid))
 
   // AbsDecEnvRec, AbsGlobalEnvRec -> AbsEnvRec
   implicit def denv2env(dEnv: AbsDecEnvRec): AbsEnvRec = AbsEnvRec(dEnv)
@@ -108,14 +119,14 @@ package object domain {
   // abstract domains
   ////////////////////////////////////////////////////////////////
   def register(
-    absUndef: UndefDomain,
-    absNull: NullDomain,
-    absBool: BoolDomain,
-    absNum: NumDomain,
-    absStr: StrDomain,
-    recencyMode: Boolean,
-    heapClone: Boolean,
-    sensitivity: Sensitivity
+      absUndef: UndefDomain,
+      absNull: NullDomain,
+      absBool: BoolDomain,
+      absNum: NumDomain,
+      absStr: StrDomain,
+      recencyMode: Boolean,
+      heapClone: Boolean,
+      sensitivity: Sensitivity
   ): Unit = {
     this.absUndef = Some(absUndef)
     this.absNull = Some(absNull)
@@ -223,9 +234,6 @@ package object domain {
 
   private def get[T](name: String, opt: Option[T]): T = opt match {
     case Some(choice) => choice
-    case None => throw NotYetDefined(name)
+    case None         => throw NotYetDefined(name)
   }
-
-  type Map[K, V] = HashMap[K, V]
-  val Map = HashMap
 }

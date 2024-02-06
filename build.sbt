@@ -1,6 +1,9 @@
 import java.io.{File, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
 
+// temporal
+logLevel := Level.Error
+
 def downloadFile(from: URL, to: File): Unit = {
   val connection = from.openConnection()
   connection.setConnectTimeout(5000)
@@ -39,7 +42,7 @@ lazy val root = (project in file(".")).settings(
   name := "SAFE",
   version := "2.0",
   organization := "kr.ac.kaist.safe",
-  scalaVersion := "2.12.6",
+  scalaVersion := "2.13.11",
   // checkCopyrights in Compile := {
   //   val violated: String = (baseDirectory.value + "/bin/checkCopyrights.sh" !!)
   //   if (violated != "") {
@@ -136,14 +139,17 @@ cleanFiles ++= Seq(file("src/main/java/kr/ac/kaist/safe/parser/"))
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % scalaVersion.value,
   "org.scala-lang" % "scala-compiler" % scalaVersion.value % "scala-tool",
-  "org.scalatest" %% "scalatest" % "3.0.0" % "test" withSources,
-  "com.typesafe.akka" %% "akka-http" % "10.0.10",
-  "io.spray" %% "spray-json" % "1.3.2",
+  "org.scalatest" %% "scalatest" % "3.2.17" % "test",
+  "com.typesafe.akka" %% "akka-http" % "10.5.0",
+  "io.spray" %% "spray-json" % "1.3.6",
   "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.2",
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.9.1",
-  "org.jline" % "jline" % "3.10.0"
+  "org.jline" % "jline" % "3.10.0",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0",
+  "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4"
 )
 
+scalacOptions += "-Xsource:3"
 javacOptions ++= Seq("-encoding", "UTF-8")
 
 retrieveManaged := true

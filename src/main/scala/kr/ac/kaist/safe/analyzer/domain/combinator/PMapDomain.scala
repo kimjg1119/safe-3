@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.domain
 
@@ -36,6 +34,22 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
 
   // pair abstract element
   case class Elem(map: Map[K, AbsVOpt], default: AbsVOpt) extends ElemTrait {
+
+    // FIXME: Use extension method for compareOptionWithPartialOrder
+    type PartialOrder[B1] = (B1, B1) => Boolean
+    type OptionPartialOrder[B1] = (Option[B1], Option[B1]) => Boolean
+
+    implicit class MapExtensions[A, B](val self: Map[A, B]) {
+      def compareOptionWithPartialOrder[B1 >: B](
+          that: Map[A, B1]
+      )(order: OptionPartialOrder[B1]): Boolean = {
+        if (self eq that) true
+        else {
+          that.keySet.forall(k => order(None, that.get(k)))
+        }
+      }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Domain member functions
     ////////////////////////////////////////////////////////////////////////////
@@ -50,8 +64,8 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
 
     // join operator
     def ⊔(that: Elem): Elem = {
-      val newMap = this.map.mergeWithIdem(that.map) {
-        case (v1, v2) => v1.getOrElse(this.default) ⊔ v2.getOrElse(that.default)
+      val newMap = this.map.mergeWithIdem(that.map) { case (v1, v2) =>
+        v1.getOrElse(this.default) ⊔ v2.getOrElse(that.default)
       }
       val newDefault = this.default ⊔ that.default
       Elem(newMap, newDefault)
@@ -59,8 +73,8 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
 
     // meet operator
     def ⊓(that: Elem): Elem = {
-      val newMap = this.map.mergeWithIdem(that.map) {
-        case (v1, v2) => v1.getOrElse(this.default) ⊓ v2.getOrElse(that.default)
+      val newMap = this.map.mergeWithIdem(that.map) { case (v1, v2) =>
+        v1.getOrElse(this.default) ⊓ v2.getOrElse(that.default)
       }
       val newDefault = this.default ⊓ that.default
       Elem(newMap, newDefault)
@@ -77,16 +91,16 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
       if (this == Bot) "⊥"
       else if (this == Top) "⊤"
       else {
-        val sortedMap = map.toSeq.sortBy {
-          case (key, _) => key.toString
+        val sortedMap = map.toSeq.sortBy { case (key, _) =>
+          key.toString
         }
         val s = new StringBuilder
         def arrow(absent: AbsAbsent): String = {
           if (absent.isBottom) "-!>"
           else "-?>"
         }
-        sortedMap.foreach {
-          case (k, vopt) => s.append(s"$k ${arrow(vopt.absent)} ${vopt.value}").append(LINE_SEP)
+        sortedMap.foreach { case (k, vopt) =>
+          s.append(s"$k ${arrow(vopt.absent)} ${vopt.value}").append(LINE_SEP)
         }
         s.append(s"DEFAULT: $default").append(LINE_SEP)
         s.toString
@@ -101,8 +115,8 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
 
     // map for values
     def mapValues(
-      f: AbsVOpt => AbsVOpt,
-      filter: (K, AbsVOpt) => Boolean = (_, _) => true
+        f: AbsVOpt => AbsVOpt,
+        filter: (K, AbsVOpt) => Boolean = (_, _) => true
     ): Elem = {
       val default = f(this.default)
       val map = this.map.foldLeft[Map[K, AbsVOpt]](Map()) {
@@ -117,8 +131,8 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
       Elem(map, default)
     }
     def mapCValues(
-      f: AbsV => AbsV,
-      filter: (K, AbsVOpt) => Boolean = (_, _) => true
+        f: AbsV => AbsV,
+        filter: (K, AbsVOpt) => Boolean = (_, _) => true
     ): Elem = mapValues(vopt => AbsVOpt(f(vopt.value), vopt.absent), filter)
 
     // update

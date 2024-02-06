@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.domain
 
@@ -25,7 +23,7 @@ object DefaultNumber extends NumDomain {
   case class NUIntConst(value: Double) extends Elem
 
   def alpha(num: Num): Elem = num.num match {
-    case num if num.isNaN => NaN
+    case num if num.isNaN        => NaN
     case Double.NegativeInfinity => NegInf
     case Double.PositiveInfinity => PosInf
     case num =>
@@ -36,53 +34,53 @@ object DefaultNumber extends NumDomain {
 
   sealed abstract class Elem extends ElemTrait {
     def gamma: ConSet[Num] = this match {
-      case Bot => ConFin()
-      case Inf => ConFin(Double.PositiveInfinity, Double.NegativeInfinity)
+      case Bot    => ConFin()
+      case Inf    => ConFin(Double.PositiveInfinity, Double.NegativeInfinity)
       case PosInf => ConFin(Double.PositiveInfinity)
       case NegInf => ConFin(Double.NegativeInfinity)
-      case NaN => ConFin(Double.NaN)
-      case UIntConst(v) => ConFin(v)
-      case NUIntConst(v) => ConFin(v)
+      case NaN    => ConFin(Double.NaN)
+      case UIntConst(v)       => ConFin(v)
+      case NUIntConst(v)      => ConFin(v)
       case Top | UInt | NUInt => ConInf
     }
 
     def getSingle: ConSingle[Num] = this match {
-      case Bot => ConZero
-      case PosInf => ConOne(Double.PositiveInfinity)
-      case NegInf => ConOne(Double.NegativeInfinity)
-      case NaN => ConOne(Double.NaN)
-      case UIntConst(v) => ConOne(v)
-      case NUIntConst(v) => ConOne(v)
+      case Bot                      => ConZero
+      case PosInf                   => ConOne(Double.PositiveInfinity)
+      case NegInf                   => ConOne(Double.NegativeInfinity)
+      case NaN                      => ConOne(Double.NaN)
+      case UIntConst(v)             => ConOne(v)
+      case NUIntConst(v)            => ConOne(v)
       case Top | UInt | NUInt | Inf => ConMany
     }
 
     def ⊑(that: Elem): Boolean = (this, that) match {
-      case (Bot, _) => true
-      case (_, Top) => true
+      case (Bot, _)                       => true
+      case (_, Top)                       => true
       case (left, right) if left == right => true
-      case (PosInf, Inf) => true
-      case (NegInf, Inf) => true
-      case (UIntConst(_), UInt) => true
-      case (NUIntConst(_), NUInt) => true
-      case _ => false
+      case (PosInf, Inf)                  => true
+      case (NegInf, Inf)                  => true
+      case (UIntConst(_), UInt)           => true
+      case (NUIntConst(_), NUInt)         => true
+      case _                              => false
     }
 
     def ⊔(that: Elem): Elem = (this, that) match {
-      case (left, right) if left ⊑ right => right
-      case (left, right) if right ⊑ left => left
-      case (PosInf, NegInf) => Inf
-      case (NegInf, PosInf) => Inf
-      case (UIntConst(a), UIntConst(b)) if a == b => this
-      case (UIntConst(_), UIntConst(_)) => UInt
+      case (left, right) if left ⊑ right            => right
+      case (left, right) if right ⊑ left            => left
+      case (PosInf, NegInf)                         => Inf
+      case (NegInf, PosInf)                         => Inf
+      case (UIntConst(a), UIntConst(b)) if a == b   => this
+      case (UIntConst(_), UIntConst(_))             => UInt
       case (NUIntConst(a), NUIntConst(b)) if a == b => this
-      case (NUIntConst(_), NUIntConst(_)) => NUInt
-      case _ => Top
+      case (NUIntConst(_), NUIntConst(_))           => NUInt
+      case _                                        => Top
     }
 
     def ⊓(that: Elem): Elem = (this, that) match {
       case (left, right) if left ⊑ right => left
       case (left, right) if right ⊑ left => right
-      case _ => Bot
+      case _                             => Bot
     }
 
     // 9.2 ToBoolean
@@ -105,37 +103,37 @@ object DefaultNumber extends NumDomain {
       case UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf => this
       // 4. Return the result of computing sign(number) * floor(abs(number)).
       case UIntConst(_) | UInt => this
-      case NUIntConst(n) => alpha(Num(n).ToInteger)
+      case NUIntConst(n)       => alpha(Num(n).ToInteger)
       // other cases
       case _ => Top
     }
 
     override def <(that: Elem): AbsBool = (this, that) match {
-      case (Bot, _) | (_, Bot) => AbsBool.Bot
-      case (NaN, _) | (_, NaN) => AF
-      case (PosInf, _) => AF
-      case (_, PosInf) => AT
-      case (_, NegInf) => AF
-      case (NegInf, _) => AT
-      case (UIntConst(n1), UIntConst(n2)) => AbsBool(n1 < n2)
-      case (UIntConst(n1), NUIntConst(n2)) => AbsBool(n1 < n2)
-      case (NUIntConst(n1), UIntConst(n2)) => AbsBool(n1 < n2)
-      case (NUIntConst(n1), NUIntConst(n2)) => AbsBool(n1 < n2)
-      case (UInt, UIntConst(0)) => AF
+      case (Bot, _) | (_, Bot)               => AbsBool.Bot
+      case (NaN, _) | (_, NaN)               => AF
+      case (PosInf, _)                       => AF
+      case (_, PosInf)                       => AT
+      case (_, NegInf)                       => AF
+      case (NegInf, _)                       => AT
+      case (UIntConst(n1), UIntConst(n2))    => AbsBool(n1 < n2)
+      case (UIntConst(n1), NUIntConst(n2))   => AbsBool(n1 < n2)
+      case (NUIntConst(n1), UIntConst(n2))   => AbsBool(n1 < n2)
+      case (NUIntConst(n1), NUIntConst(n2))  => AbsBool(n1 < n2)
+      case (UInt, UIntConst(0))              => AF
       case (UInt, NUIntConst(n2)) if n2 <= 0 => AF
-      case _ => AbsBool.Top
+      case _                                 => AbsBool.Top
     }
 
     override def StrictEquals(that: Elem): AbsBool = (this, that) match {
-      case (Bot, _) | (_, Bot) => AbsBool.Bot
-      case (NaN, _) | (_, NaN) => AF
-      case (UIntConst(n1), UIntConst(n2)) => AbsBool(n1 == n2)
-      case (UIntConst(n1), NUIntConst(n2)) => AbsBool(n1 == n2)
-      case (NUIntConst(n1), UIntConst(n2)) => AbsBool(n1 == n2)
-      case (NUIntConst(n1), NUIntConst(n2)) => AbsBool(n1 == n2)
+      case (Bot, _) | (_, Bot)                 => AbsBool.Bot
+      case (NaN, _) | (_, NaN)                 => AF
+      case (UIntConst(n1), UIntConst(n2))      => AbsBool(n1 == n2)
+      case (UIntConst(n1), NUIntConst(n2))     => AbsBool(n1 == n2)
+      case (NUIntConst(n1), UIntConst(n2))     => AbsBool(n1 == n2)
+      case (NUIntConst(n1), NUIntConst(n2))    => AbsBool(n1 == n2)
       case (NegInf, NegInf) | (PosInf, PosInf) => AT
       case (left, right) if !(left ⊑ right) && !(right ⊑ left) => AF
-      case _ => AbsBool.Top
+      case _                                                   => AbsBool.Top
     }
 
     /* Operators */
@@ -203,7 +201,8 @@ object DefaultNumber extends NumDomain {
         //     followed by the lowercase character 'e', followed by a plus sign '+' or minus sign '-' according to
         //     whether n-1 is positive or negative, followed by the decimal representation of the integer abs(n-1) (with no leading zeroes).
         val str = getStr(sLong)
-        str.substring(0, 1) + '.' + str.substring(1) + 'e' + getSign(n) + math.abs(n - 1).toString
+        str.substring(0, 1) + '.' + str
+          .substring(1) + 'e' + getSign(n) + math.abs(n - 1).toString
       }
     }
 
@@ -216,13 +215,13 @@ object DefaultNumber extends NumDomain {
       case UIntConst(0) | NUIntConst(0) => AbsStr("0")
       // 3. If m is less than zero, return the String concatenation of the String "-" and ToString( m).
       case NUIntConst(n) if n < 0 => AbsStr("-") concat alpha(-n).ToString
-      case NegInf => AbsStr("-Infinity")
+      case NegInf                 => AbsStr("-Infinity")
       // 4. If m is infinity, return the String "Infinity".
       case PosInf => AbsStr("Infinity")
       // 5. Otherwise,
-      case UIntConst(n) => AbsStr(toString(n.toDouble))
+      case UIntConst(n)  => AbsStr(toString(n.toDouble))
       case NUIntConst(n) => AbsStr(toString(n))
-      case _ => AbsStr.Number
+      case _             => AbsStr.Number
     }
 
     private def modulo(posInt: Long, bound: Long): Long = {
@@ -236,7 +235,8 @@ object DefaultNumber extends NumDomain {
       def helper(number: Double): Long = {
         val bound = 0x100000000L // 2^32
         // 3. Let posInt be sign(number) * floor(abs(number)).
-        val posInt: Long = (math.signum(number) * math.floor(math.abs(number))).toLong
+        val posInt: Long =
+          (math.signum(number) * math.floor(math.abs(number))).toLong
         // 4. Let int32bit be posInt modulo 2^32;
         val int32bit = modulo(posInt, bound)
         // 5. If int32bit is greater than or equal to 2^31, return int32bit - 2^32, otherwise return int32bit.
@@ -246,9 +246,10 @@ object DefaultNumber extends NumDomain {
       this match {
         case Bot => Bot
         // 2. If number is NaN, +0, -0, +Infinity, or Infinity, return +0.
-        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf => UIntConst(0)
+        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf =>
+          UIntConst(0)
         // by helper
-        case UIntConst(n) => alpha(helper(n.toDouble))
+        case UIntConst(n)  => alpha(helper(n.toDouble))
         case NUIntConst(n) => alpha(helper(n))
         // other cases
         case _ => Top
@@ -260,7 +261,8 @@ object DefaultNumber extends NumDomain {
       def helper(number: Double): Long = {
         val bound = 0x100000000L // 2^32
         // 3. Let posInt be sign(number) * floor(abs(number)).
-        val posInt: Long = (math.signum(number) * math.floor(math.abs(number))).toLong
+        val posInt: Long =
+          (math.signum(number) * math.floor(math.abs(number))).toLong
         // 4. Let int32bit be posInt modulo 2^32;
         val int32bit = modulo(posInt, bound)
         // 5. Return int32bit.
@@ -269,9 +271,10 @@ object DefaultNumber extends NumDomain {
       this match {
         case Bot => Bot
         // 2. If number is NaN, +0, -0, +Infinity, or Infinity, return +0.
-        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf => UIntConst(0)
+        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf =>
+          UIntConst(0)
         // by helper
-        case UIntConst(n) => UIntConst(helper(n.toDouble))
+        case UIntConst(n)  => UIntConst(helper(n.toDouble))
         case NUIntConst(n) => UIntConst(helper(n))
         // other cases
         case _ => UInt
@@ -283,7 +286,8 @@ object DefaultNumber extends NumDomain {
       def helper(number: Double): Long = {
         val bound = 0x10000L // 2^16
         // 3. Let posInt be sign(number) * floor(abs(number)).
-        val posInt: Long = (math.signum(number) * math.floor(math.abs(number))).toLong
+        val posInt: Long =
+          (math.signum(number) * math.floor(math.abs(number))).toLong
         // 4. Let int16bit be posInt modulo 2^16;
         val int16bit = modulo(posInt, bound)
         // 5. Return int16bit.
@@ -292,9 +296,10 @@ object DefaultNumber extends NumDomain {
       this match {
         case Bot => Bot
         // 2. If number is NaN, +0, -0, +Infinity, or Infinity, return +0.
-        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf => UIntConst(0)
+        case NaN | UIntConst(0) | NUIntConst(0) | PosInf | NegInf | Inf =>
+          UIntConst(0)
         // by helper
-        case UIntConst(n) => UIntConst(helper(n.toDouble))
+        case UIntConst(n)  => UIntConst(helper(n.toDouble))
         case NUIntConst(n) => UIntConst(helper(n))
         // other cases
         case _ => UInt
@@ -305,31 +310,31 @@ object DefaultNumber extends NumDomain {
     override def SameValue(that: Elem): AbsBool = (this, that) match {
       case (Bot, _) | (_, Bot) => AbsBool.Bot
       // a. If x is NaN and y is NaN, return true.
-      case (NaN, NaN) => AT
+      case (NaN, NaN)              => AT
       case (NaN, Top) | (Top, NaN) => AbsBool.Top
       // b. If x is +0 and y is -0, return false.
-      case (UIntConst(0), NUIntConst(0)) => AF
-      case (UIntConst(0), NUInt) | (UIntConst(0), Top) => AbsBool.Top
+      case (UIntConst(0), NUIntConst(0))                => AF
+      case (UIntConst(0), NUInt) | (UIntConst(0), Top)  => AbsBool.Top
       case (UInt, NUIntConst(0)) | (Top, NUIntConst(0)) => AbsBool.Top
       // c. If x is -0 and y is +0, return false.
-      case (NUIntConst(0), UIntConst(0)) => AF
+      case (NUIntConst(0), UIntConst(0))                => AF
       case (NUIntConst(0), UInt) | (NUIntConst(0), Top) => AbsBool.Top
-      case (NUInt, UIntConst(0)) | (Top, UIntConst(0)) => AbsBool.Top
+      case (NUInt, UIntConst(0)) | (Top, UIntConst(0))  => AbsBool.Top
       // d. If x is the same Number value as y, return true.
       // e. Return false.
       case (left, right) => left StrictEquals right
     }
 
     // 11.4.7 Unary-Operator
-    override def unary_-(): Elem = this match {
+    override def unary_- : Elem = this match {
       case Bot => Bot
       // 3. If oldValue is NaN, return NaN.
       case NaN => NaN
       // 4. Return the result of negating oldValue
-      case PosInf => NegInf
-      case NegInf => PosInf
-      case UInt => NUInt
-      case UIntConst(n) => alpha(-(n.toDouble))
+      case PosInf        => NegInf
+      case NegInf        => PosInf
+      case UInt          => NUInt
+      case UIntConst(n)  => alpha(-(n.toDouble))
       case NUIntConst(n) => alpha(-n)
       // other cases
       case _ => this
@@ -346,209 +351,195 @@ object DefaultNumber extends NumDomain {
       case NegInf | Inf => PosInf
       // other cases
       case NUIntConst(n) => alpha(math.abs(n))
-      case NUInt => Top
-      case _ => this
+      case NUInt         => Top
+      case _             => this
     }
 
     // TODO 15.8.2.2 acos (x)
     def acos: Elem = this match {
-      case Top => Top
-      case Bot => this
-      case NaN
-        | Inf
-        | PosInf
-        | NegInf => NaN
-      case UIntConst(n) if n > 1 => NaN
-      case UIntConst(n) => alpha(Math.acos(n))
+      case Top                              => Top
+      case Bot                              => this
+      case NaN | Inf | PosInf | NegInf      => NaN
+      case UIntConst(n) if n > 1            => NaN
+      case UIntConst(n)                     => alpha(Math.acos(n))
       case NUIntConst(n) if n > 1 || n < -1 => NaN
-      case NUIntConst(n) => alpha(Math.acos(n))
-      case _ => Top
+      case NUIntConst(n)                    => alpha(Math.acos(n))
+      case _                                => Top
     }
 
     // TODO 15.8.2.3 asin (x)
     def asin: Elem = {
       this match {
-        case Bot => this
-        case NaN
-          | Inf
-          | PosInf
-          | NegInf => NaN
-        case UIntConst(n) if n > 1 => NaN
-        case UIntConst(n) => alpha(Math.asin(n))
+        case Bot                              => this
+        case NaN | Inf | PosInf | NegInf      => NaN
+        case UIntConst(n) if n > 1            => NaN
+        case UIntConst(n)                     => alpha(Math.asin(n))
         case NUIntConst(n) if n > 1 || n < -1 => NaN
-        case NUIntConst(n) => alpha(Math.asin(n))
-        case _ => Top
+        case NUIntConst(n)                    => alpha(Math.asin(n))
+        case _                                => Top
       }
     }
 
     // TODO 15.8.2.4 atan (x)
     def atan: Elem = {
       this match {
-        case Bot | NaN => this
-        case Inf => NUInt
-        case PosInf => alpha(scala.math.Pi / 2)
-        case NegInf => alpha(-scala.math.Pi / 2)
-        case UIntConst(n) => alpha(Math.atan(n))
+        case Bot | NaN     => this
+        case Inf           => NUInt
+        case PosInf        => alpha(scala.math.Pi / 2)
+        case NegInf        => alpha(-scala.math.Pi / 2)
+        case UIntConst(n)  => alpha(Math.atan(n))
         case NUIntConst(n) => alpha(Math.atan(n))
-        case NUInt => Top
-        case _ => Top
+        case NUInt         => Top
+        case _             => Top
       }
     }
 
-    //TODO 15.8.2.5 atan2 (y, x)
+    // TODO 15.8.2.5 atan2 (y, x)
     def atan2(that: Elem): Elem = (this, that) match {
-      case (NaN, _)
-        | (_, NaN) => NaN
+      case (NaN, _) | (_, NaN) => NaN
       case (Bot, _) | (_, Bot) => Bot
       case (Top, _) | (_, Top) => Top
       // if (this > 0) & (that == + 0 | that == - 0) then PI/2
-      case (UIntConst(x), UIntConst(0)) if x > 0 => alpha(scala.math.Pi / 2)
-      case (UIntConst(x), NUIntConst(0)) if x > 0 => alpha(scala.math.Pi / 2)
-      case (NUIntConst(x), UIntConst(0)) if x > 0 => alpha(scala.math.Pi / 2)
+      case (UIntConst(x), UIntConst(0)) if x > 0   => alpha(scala.math.Pi / 2)
+      case (UIntConst(x), NUIntConst(0)) if x > 0  => alpha(scala.math.Pi / 2)
+      case (NUIntConst(x), UIntConst(0)) if x > 0  => alpha(scala.math.Pi / 2)
       case (NUIntConst(x), NUIntConst(0)) if x > 0 => alpha(scala.math.Pi / 2)
-      case (UInt, UIntConst(0)) => Top
-      case (UInt, NUIntConst(0)) => NUInt
-      case (PosInf, UIntConst(0)) | (PosInf, NUIntConst(0)) => alpha(scala.math.Pi / 2)
+      case (UInt, UIntConst(0))                    => Top
+      case (UInt, NUIntConst(0))                   => NUInt
+      case (PosInf, UIntConst(0)) | (PosInf, NUIntConst(0)) =>
+        alpha(scala.math.Pi / 2)
       // if (this == + 0) & (that >= + 0) then 0
-      case (UIntConst(0), UIntConst(_)) => alpha(0.0)
+      case (UIntConst(0), UIntConst(_))           => alpha(0.0)
       case (UIntConst(0), NUIntConst(x)) if x > 0 => alpha(0.0)
-      case (UIntConst(0), UInt) => alpha(0.0)
-      case (UIntConst(0), PosInf) => alpha(0.0)
+      case (UIntConst(0), UInt)                   => alpha(0.0)
+      case (UIntConst(0), PosInf)                 => alpha(0.0)
       // if (this == + 0) & (that <= - 0) then PI
-      case (UIntConst(0), NUIntConst(0)) => alpha(scala.math.Pi)
+      case (UIntConst(0), NUIntConst(0))          => alpha(scala.math.Pi)
       case (UIntConst(0), NUIntConst(x)) if x < 0 => alpha(scala.math.Pi)
-      case (UIntConst(0), NegInf) => alpha(scala.math.Pi)
+      case (UIntConst(0), NegInf)                 => alpha(scala.math.Pi)
       // if (this == + 0) & (that ? 0) then (0 or PI)
-      case (UIntConst(0), NUInt) | (UIntConst(0), Inf) => alpha(0.0) ⊔ alpha(scala.math.Pi)
+      case (UIntConst(0), NUInt) | (UIntConst(0), Inf) =>
+        alpha(0.0) ⊔ alpha(scala.math.Pi)
       // if (this == - 0) & (that >= +0) then - 0
-      case (NUIntConst(0), UIntConst(_)) => alpha(-0.0)
+      case (NUIntConst(0), UIntConst(_))           => alpha(-0.0)
       case (NUIntConst(0), NUIntConst(x)) if x > 0 => alpha(-0.0)
-      case (NUIntConst(0), UInt) => alpha(-0.0)
-      case (NUIntConst(0), PosInf) => alpha(-0.0)
+      case (NUIntConst(0), UInt)                   => alpha(-0.0)
+      case (NUIntConst(0), PosInf)                 => alpha(-0.0)
       // if (this == - 0) & (that <= - 0) then - PI
-      case (NUIntConst(0), NUIntConst(0)) => alpha(-scala.math.Pi)
+      case (NUIntConst(0), NUIntConst(0))          => alpha(-scala.math.Pi)
       case (NUIntConst(0), NUIntConst(x)) if x < 0 => alpha(-scala.math.Pi)
-      case (NUIntConst(0), NegInf) => alpha(-scala.math.Pi)
+      case (NUIntConst(0), NegInf)                 => alpha(-scala.math.Pi)
       // if (this == - 0) & (that ? 0) then (- 0 or - PI)
-      case (NUIntConst(0), NUInt) | (UIntConst(0), Inf) => alpha(-0.0) ⊔ alpha(-scala.math.Pi)
+      case (NUIntConst(0), NUInt) | (UIntConst(0), Inf) =>
+        alpha(-0.0) ⊔ alpha(-scala.math.Pi)
       // if (this < 0) & (that == + 0 | that == - 0) then - PI/2
-      case (NUIntConst(x), UIntConst(0)) if x < 0 => alpha(-scala.math.Pi / 2)
+      case (NUIntConst(x), UIntConst(0)) if x < 0  => alpha(-scala.math.Pi / 2)
       case (NUIntConst(x), NUIntConst(0)) if x < 0 => alpha(-scala.math.Pi / 2)
-      case (NegInf, UIntConst(0)) => alpha(-scala.math.Pi / 2)
-      case (NegInf, NUIntConst(0)) => alpha(-scala.math.Pi / 2)
+      case (NegInf, UIntConst(0))                  => alpha(-scala.math.Pi / 2)
+      case (NegInf, NUIntConst(0))                 => alpha(-scala.math.Pi / 2)
 
-      case (UIntConst(y), PosInf) if y > 0 => alpha(0)
+      case (UIntConst(y), PosInf) if y > 0  => alpha(0)
       case (NUIntConst(y), PosInf) if y > 0 => alpha(0)
-      case (UIntConst(y), NegInf) if y > 0 => alpha(scala.math.Pi)
+      case (UIntConst(y), NegInf) if y > 0  => alpha(scala.math.Pi)
       case (NUIntConst(y), NegInf) if y > 0 => alpha(scala.math.Pi)
       case (NUIntConst(y), PosInf) if y < 0 => alpha(-0.0)
       case (NUIntConst(y), NegInf) if y < 0 => alpha(-scala.math.Pi)
-      case (PosInf, UInt | NUInt | UIntConst(_) | NUIntConst(_)) => alpha(scala.math.Pi / 2)
-      case (NegInf, UInt | NUInt | UIntConst(_) | NUIntConst(_)) => alpha(-scala.math.Pi / 2)
-      case (PosInf, PosInf) => alpha(scala.math.Pi / 4)
-      case (PosInf, NegInf) => alpha(scala.math.Pi * 3 / 4)
-      case (NegInf, PosInf) => alpha(-scala.math.Pi / 4)
-      case (NegInf, NegInf) => alpha(-scala.math.Pi * 3 / 4)
-      case (UIntConst(y), UIntConst(x)) => alpha(scala.math.atan2(y, x))
-      case (UIntConst(y), NUIntConst(x)) => alpha(scala.math.atan2(y, x))
-      case (NUIntConst(y), UIntConst(x)) => alpha(scala.math.atan2(y, x))
+      case (PosInf, UInt | NUInt | UIntConst(_) | NUIntConst(_)) =>
+        alpha(scala.math.Pi / 2)
+      case (NegInf, UInt | NUInt | UIntConst(_) | NUIntConst(_)) =>
+        alpha(-scala.math.Pi / 2)
+      case (PosInf, PosInf)               => alpha(scala.math.Pi / 4)
+      case (PosInf, NegInf)               => alpha(scala.math.Pi * 3 / 4)
+      case (NegInf, PosInf)               => alpha(-scala.math.Pi / 4)
+      case (NegInf, NegInf)               => alpha(-scala.math.Pi * 3 / 4)
+      case (UIntConst(y), UIntConst(x))   => alpha(scala.math.atan2(y, x))
+      case (UIntConst(y), NUIntConst(x))  => alpha(scala.math.atan2(y, x))
+      case (NUIntConst(y), UIntConst(x))  => alpha(scala.math.atan2(y, x))
       case (NUIntConst(y), NUIntConst(x)) => alpha(scala.math.atan2(y, x))
-      case (_, _) => Top
+      case (_, _)                         => Top
     }
 
     // TODO 15.8.2.6 ceil (x)
     def ceil: Elem = {
       this match {
-        case Bot
-          | NaN
-          | Inf
-          | PosInf
-          | NegInf
-          | UInt => this
-        case UIntConst(n) => alpha(scala.math.ceil(n))
+        case Bot | NaN | Inf | PosInf | NegInf | UInt => this
+        case UIntConst(n)  => alpha(scala.math.ceil(n))
         case NUIntConst(n) => alpha(scala.math.ceil(n))
-        case _ => Top
+        case _             => Top
       }
     }
 
     // TODO 15.8.2.7 cos (x)
     def cos: Elem = {
       this match {
-        case NaN
-          | Inf
-          | PosInf
-          | NegInf => NaN
-        case UIntConst(n) => alpha(Math.cos(n))
-        case NUIntConst(n) => alpha(Math.cos(n))
-        case _ => Top
+        case NaN | Inf | PosInf | NegInf => NaN
+        case UIntConst(n)                => alpha(Math.cos(n))
+        case NUIntConst(n)               => alpha(Math.cos(n))
+        case _                           => Top
       }
     }
 
     // TODO 15.8.2.8 exp (x)
     def exp: Elem = {
       this match {
-        case NaN
-          | PosInf => this
+        case NaN | PosInf                 => this
         case UIntConst(0) | NUIntConst(0) => alpha(1)
-        case NegInf => alpha(0)
-        case UIntConst(n) => alpha(Math.exp(n))
-        case NUIntConst(n) => alpha(Math.exp(n))
-        case _ => Top
+        case NegInf                       => alpha(0)
+        case UIntConst(n)                 => alpha(Math.exp(n))
+        case NUIntConst(n)                => alpha(Math.exp(n))
+        case _                            => Top
       }
     }
 
     // TODO 15.8.2.9 floor (x)
     def floor: Elem = {
       this match {
-        case Bot
-          | NaN
-          | Inf
-          | PosInf
-          | NegInf
-          | UInt => this
-        case UIntConst(n) => alpha(scala.math.floor(n))
+        case Bot | NaN | Inf | PosInf | NegInf | UInt => this
+        case UIntConst(n)  => alpha(scala.math.floor(n))
         case NUIntConst(n) => alpha(scala.math.floor(n))
-        case _ => Top
+        case _             => Top
       }
     }
 
     // TODO 15.8.2.10 log (x)
     def log: Elem = {
       this match {
-        case NaN => this
-        case NegInf => NaN
-        case NUIntConst(x) if x < 0 => NaN
+        case NaN                          => this
+        case NegInf                       => NaN
+        case NUIntConst(x) if x < 0       => NaN
         case UIntConst(0) | NUIntConst(0) => NegInf
-        case PosInf => this
-        case UIntConst(n) => alpha(scala.math.log(n))
-        case NUIntConst(n) => alpha(scala.math.log(n))
-        case _ => Top
+        case PosInf                       => this
+        case UIntConst(n)                 => alpha(scala.math.log(n))
+        case NUIntConst(n)                => alpha(scala.math.log(n))
+        case _                            => Top
       }
     }
 
     // TODO 15.8.2.13 pow (x, y)
     def pow(that: Elem): Elem = (this, that) match {
-      case (UInt, UInt) => Top
+      case (UInt, UInt)         => Top
       case (UInt, UIntConst(_)) => Top
       case (UIntConst(_), UInt) => Top
-      case (UIntConst(1), Inf) => NaN
-      case (UIntConst(_) | NUIntConst(_) | NaN | PosInf | NegInf,
-        UIntConst(_) | NUIntConst(_) | NaN | PosInf | NegInf) => {
+      case (UIntConst(1), Inf)  => NaN
+      case (
+            UIntConst(_) | NUIntConst(_) | NaN | PosInf | NegInf,
+            UIntConst(_) | NUIntConst(_) | NaN | PosInf | NegInf
+          ) => {
         val x: Double = this match {
-          case UIntConst(n) => n
+          case UIntConst(n)  => n
           case NUIntConst(n) => n
-          case NaN => Double.NaN
-          case PosInf => Double.PositiveInfinity
-          case NegInf => Double.NegativeInfinity
-          case _ => 1 //unreachable
+          case NaN           => Double.NaN
+          case PosInf        => Double.PositiveInfinity
+          case NegInf        => Double.NegativeInfinity
+          case _             => 1 // unreachable
         }
         val y: Double = that match {
-          case UIntConst(n) => n
+          case UIntConst(n)  => n
           case NUIntConst(n) => n
-          case NaN => Double.NaN
-          case PosInf => Double.PositiveInfinity
-          case NegInf => Double.NegativeInfinity
-          case _ => 1 //unreachable
+          case NaN           => Double.NaN
+          case PosInf        => Double.PositiveInfinity
+          case NegInf        => Double.NegativeInfinity
+          case _             => 1 // unreachable
         }
         alpha(scala.math.pow(x, y))
       }
@@ -558,77 +549,67 @@ object DefaultNumber extends NumDomain {
     // TODO 15.8.2.15 round (x)
     def round: Elem = {
       this match {
-        case NaN
-          | Inf
-          | PosInf
-          | NegInf
-          | UInt
-          | UIntConst(_) => this
-        case NUIntConst(0) => alpha(-0.0)
+        case NaN | Inf | PosInf | NegInf | UInt | UIntConst(_) => this
+        case NUIntConst(0)                                     => alpha(-0.0)
         case NUIntConst(n) => alpha(scala.math.round(n))
-        case _ => Top
+        case _             => Top
       }
     }
 
     // TODO 15.8.2.16 sin (x)
     def sin: Elem = {
       this match {
-        case NaN
-          | Inf
-          | PosInf
-          | NegInf => NaN
-        case NUInt => Top
-        case UIntConst(n) => alpha(scala.math.sin(n))
-        case NUIntConst(n) => alpha(scala.math.sin(n))
-        case _ => Top
+        case NaN | Inf | PosInf | NegInf => NaN
+        case NUInt                       => Top
+        case UIntConst(n)                => alpha(scala.math.sin(n))
+        case NUIntConst(n)               => alpha(scala.math.sin(n))
+        case _                           => Top
       }
     }
 
     // TODO 15.8.2.17 sqrt (x)
     def sqrt: Elem = {
       this match {
-        case NaN
-          | NegInf => NaN
-        case PosInf => PosInf
-        case UIntConst(n) => alpha(scala.math.sqrt(n))
+        case NaN | NegInf           => NaN
+        case PosInf                 => PosInf
+        case UIntConst(n)           => alpha(scala.math.sqrt(n))
         case NUIntConst(n) if n < 0 => NaN
-        case NUIntConst(n) => alpha(scala.math.sqrt(n))
-        case _ => Top
+        case NUIntConst(n)          => alpha(scala.math.sqrt(n))
+        case _                      => Top
       }
     }
 
     // TODO 15.8.2.18 tan (x)
     def tan: Elem = {
       this match {
-        case NaN
-          | Inf
-          | PosInf
-          | NegInf => NaN
-        case NUInt => Top
-        case UIntConst(n) => alpha(scala.math.tan(n))
-        case NUIntConst(n) => alpha(scala.math.tan(n))
-        case _ => Top
+        case NaN | Inf | PosInf | NegInf => NaN
+        case NUInt                       => Top
+        case UIntConst(n)                => alpha(scala.math.tan(n))
+        case NUIntConst(n)               => alpha(scala.math.tan(n))
+        case _                           => Top
       }
     }
 
     // 11.4.8 Bitwise NOT Operator ( ~ )
     // 1. Let expr be the result of evaluating UnaryExpression.
     // 2. Let oldValue be ToInt32(GetValue(expr)).
-    override def unary_~(): Elem = ToInt32 match {
+    override def unary_~ : Elem = ToInt32 match {
       case Bot => Bot
       // 3. Return the result of applying bitwise complement to oldValue.
-      case UIntConst(n) => alpha(~(n.toInt))
+      case UIntConst(n)  => alpha(~(n.toInt))
       case NUIntConst(n) => alpha(~(n.toInt))
-      case UInt => NUInt
-      case _ => Top
+      case UInt          => NUInt
+      case _             => Top
     }
 
-    private def binaryBitwiseOp(left: Elem, right: Elem)(op: (Int, Int) => Int): Elem = (left.ToInt32, right.ToInt32) match {
-      case (UIntConst(l), UIntConst(r)) => alpha(op(l.toInt, r.toInt))
-      case (UIntConst(l), NUIntConst(r)) => alpha(op(l.toInt, r.toInt))
-      case (NUIntConst(l), UIntConst(r)) => alpha(op(l.toInt, r.toInt))
+    private def binaryBitwiseOp(left: Elem, right: Elem)(
+        op: (Int, Int) => Int
+    ): Elem = (left.ToInt32, right.ToInt32) match {
+      case (UIntConst(l), UIntConst(r))   => alpha(op(l.toInt, r.toInt))
+      case (UIntConst(l), NUIntConst(r))  => alpha(op(l.toInt, r.toInt))
+      case (NUIntConst(l), UIntConst(r))  => alpha(op(l.toInt, r.toInt))
       case (NUIntConst(l), NUIntConst(r)) => alpha(op(l.toInt, r.toInt))
-      case _ => Top
+      case _                              => Top
     }
 
     // 11.10 BinaryBitwiseOperators
@@ -637,14 +618,14 @@ object DefaultNumber extends NumDomain {
     override def ^(that: Elem): Elem = binaryBitwiseOp(this, that)(_ ^ _)
 
     private def binaryShiftOp(
-      left: Elem,
-      right: Elem,
-      signed: Boolean = true
+        left: Elem,
+        right: Elem,
+        signed: Boolean = true
     )(op: (Int, Int) => Long): Elem = (left.ToUint32, right.ToUint32) match {
       case (UIntConst(l), UIntConst(r)) =>
         val bound = 0x100000000L
         val l32 = l.toInt
-        val r32 = (r & 0x1F).toInt
+        val r32 = (r & 0x1f).toInt
         val result = op(l32, r32)
         if (!signed && result < 0) alpha(bound + result.toLong)
         else alpha(result)
@@ -656,7 +637,8 @@ object DefaultNumber extends NumDomain {
     // 11.7.2 The Signed Right Shift Operator ( >> )
     override def >>(shift: Elem): Elem = binaryShiftOp(this, shift)(_ >> _)
     // 11.7.3 The Unsigned Right Shift Operator ( >>> )
-    override def >>>(shift: Elem): Elem = binaryShiftOp(this, shift, false)(_ >>> _)
+    override def >>>(shift: Elem): Elem =
+      binaryShiftOp(this, shift, false)(_ >>> _)
 
     // 11.6.3 Applying the Additive Operators to Numbers
     override def +(that: Elem): Elem = (this, that) match {
@@ -673,17 +655,18 @@ object DefaultNumber extends NumDomain {
       // The sum of two negative zeroes is -0.
       case (NUIntConst(0), NUIntConst(0)) => alpha(-0.0)
       // The sum of two positive zeroes, or of two zeroes of opposite sign, is +0.
-      case (NUIntConst(0) | UIntConst(0), NUIntConst(0) | UIntConst(0)) => UIntConst(0)
+      case (NUIntConst(0) | UIntConst(0), NUIntConst(0) | UIntConst(0)) =>
+        UIntConst(0)
       // The sum of a zero and a nonzero finite value is equal to the nonzero operand.
       case (NUIntConst(0) | UIntConst(0), right) => right
-      case (left, NUIntConst(0) | UIntConst(0)) => left
+      case (left, NUIntConst(0) | UIntConst(0))  => left
       // The sum of two nonzero finite values of the same magnitude and opposite sign is +0.
       // In the remaining cases, add two numbers.
-      case (UIntConst(l), UIntConst(r)) => alpha(l + r.toDouble)
-      case (UIntConst(l), NUIntConst(r)) => alpha(l + r)
-      case (NUIntConst(l), UIntConst(r)) => alpha(l + r)
+      case (UIntConst(l), UIntConst(r))   => alpha(l + r.toDouble)
+      case (UIntConst(l), NUIntConst(r))  => alpha(l + r)
+      case (NUIntConst(l), UIntConst(r))  => alpha(l + r)
       case (NUIntConst(l), NUIntConst(r)) => alpha(l + r)
-      case _ => Top
+      case _                              => Top
     }
 
     override def -(that: Elem): Elem = this + (-that)
@@ -701,24 +684,24 @@ object DefaultNumber extends NumDomain {
       case (NegInf, NegInf) => PosInf
       case (NegInf, PosInf) => NegInf
       /* 11.5.1 fifth */
-      case (PosInf, UIntConst(_)) => PosInf
+      case (PosInf, UIntConst(_))           => PosInf
       case (PosInf, NUIntConst(n)) if n > 0 => PosInf
-      case (PosInf, NUIntConst(_)) => NegInf
-      case (NegInf, UIntConst(_)) => NegInf
+      case (PosInf, NUIntConst(_))          => NegInf
+      case (NegInf, UIntConst(_))           => NegInf
       case (NegInf, NUIntConst(n)) if n > 0 => NegInf
-      case (NegInf, NUIntConst(_)) => PosInf
-      case (UIntConst(_), PosInf) => PosInf
+      case (NegInf, NUIntConst(_))          => PosInf
+      case (UIntConst(_), PosInf)           => PosInf
       case (NUIntConst(n), PosInf) if n > 0 => PosInf
-      case (NUIntConst(_), PosInf) => NegInf
-      case (UIntConst(_), NegInf) => NegInf
+      case (NUIntConst(_), PosInf)          => NegInf
+      case (UIntConst(_), NegInf)           => NegInf
       case (NUIntConst(n), NegInf) if n > 0 => NegInf
-      case (NUIntConst(_), NegInf) => PosInf
+      case (NUIntConst(_), NegInf)          => PosInf
       /* 11.5.1 sixth */
-      case (UIntConst(n1), UIntConst(n2)) => alpha(n1 * n2.toDouble)
-      case (UIntConst(n1), NUIntConst(n2)) => alpha(n1 * n2)
-      case (NUIntConst(n1), UIntConst(n2)) => alpha(n1 * n2)
+      case (UIntConst(n1), UIntConst(n2))   => alpha(n1 * n2.toDouble)
+      case (UIntConst(n1), NUIntConst(n2))  => alpha(n1 * n2)
+      case (NUIntConst(n1), UIntConst(n2))  => alpha(n1 * n2)
       case (NUIntConst(n1), NUIntConst(n2)) => alpha(n1 * n2)
-      case _ => Top
+      case _                                => Top
     }
 
     override def /(that: Elem): Elem = (this, that) match {
@@ -728,45 +711,45 @@ object DefaultNumber extends NumDomain {
       /* 11.5.2 third */
       case (PosInf | NegInf, PosInf | NegInf) => NaN
       /* 11.5.2 fourth */
-      case (PosInf, UIntConst(0)) => PosInf
+      case (PosInf, UIntConst(0))  => PosInf
       case (PosInf, NUIntConst(0)) => NegInf
-      case (NegInf, UIntConst(0)) => NegInf
+      case (NegInf, UIntConst(0))  => NegInf
       case (NegInf, NUIntConst(0)) => PosInf
       /* 11.5.2 fifth */
-      case (PosInf, UIntConst(_)) => PosInf
+      case (PosInf, UIntConst(_))           => PosInf
       case (PosInf, NUIntConst(n)) if n > 0 => PosInf
-      case (PosInf, NUIntConst(_)) => NegInf
-      case (NegInf, UIntConst(_)) => NegInf
+      case (PosInf, NUIntConst(_))          => NegInf
+      case (NegInf, UIntConst(_))           => NegInf
       case (NegInf, NUIntConst(n)) if n > 0 => NegInf
-      case (NegInf, NUIntConst(_)) => PosInf
+      case (NegInf, NUIntConst(_))          => PosInf
       /* 11.5.2 sixth */
-      case (UIntConst(_), PosInf) => alpha(0)
+      case (UIntConst(_), PosInf)           => alpha(0)
       case (NUIntConst(n), PosInf) if n > 0 => alpha(0)
-      case (NUIntConst(_), PosInf) => alpha(-0.0)
-      case (UIntConst(_), NegInf) => alpha(-0.0)
+      case (NUIntConst(_), PosInf)          => alpha(-0.0)
+      case (UIntConst(_), NegInf)           => alpha(-0.0)
       case (NUIntConst(n), NegInf) if n > 0 => alpha(-0.0)
-      case (NUIntConst(_), NegInf) => alpha(0)
+      case (NUIntConst(_), NegInf)          => alpha(0)
       /* 11.5.2  seventh */
       case (UIntConst(0) | NUIntConst(0), UIntConst(0) | NUIntConst(0)) => NaN
-      case (UIntConst(0), UIntConst(_)) => alpha(0)
-      case (UIntConst(0), NUIntConst(n)) if n > 0 => alpha(0)
-      case (UIntConst(0), NUIntConst(_)) => alpha(-0.0)
-      case (NUIntConst(0), UIntConst(_)) => alpha(-0.0)
+      case (UIntConst(0), UIntConst(_))            => alpha(0)
+      case (UIntConst(0), NUIntConst(n)) if n > 0  => alpha(0)
+      case (UIntConst(0), NUIntConst(_))           => alpha(-0.0)
+      case (NUIntConst(0), UIntConst(_))           => alpha(-0.0)
       case (NUIntConst(0), NUIntConst(n)) if n > 0 => alpha(-0.0)
-      case (NUIntConst(0), NUIntConst(_)) => alpha(0)
+      case (NUIntConst(0), NUIntConst(_))          => alpha(0)
       /* 11.5.2  eighth */
-      case (UIntConst(_), UIntConst(0)) => PosInf
-      case (UIntConst(_), NUIntConst(0)) => NegInf
-      case (NUIntConst(n), UIntConst(0)) if n > 0 => PosInf
+      case (UIntConst(_), UIntConst(0))            => PosInf
+      case (UIntConst(_), NUIntConst(0))           => NegInf
+      case (NUIntConst(n), UIntConst(0)) if n > 0  => PosInf
       case (NUIntConst(n), NUIntConst(0)) if n > 0 => NegInf
-      case (NUIntConst(_), UIntConst(0)) => NegInf
-      case (NUIntConst(_), NUIntConst(0)) => PosInf
+      case (NUIntConst(_), UIntConst(0))           => NegInf
+      case (NUIntConst(_), NUIntConst(0))          => PosInf
       /* 11.5.2  ninth */
-      case (UIntConst(n1), UIntConst(n2)) => alpha(n1 / n2.toDouble)
-      case (UIntConst(n1), NUIntConst(n2)) => alpha(n1 / n2)
-      case (NUIntConst(n1), UIntConst(n2)) => alpha(n1 / n2)
+      case (UIntConst(n1), UIntConst(n2))   => alpha(n1 / n2.toDouble)
+      case (UIntConst(n1), NUIntConst(n2))  => alpha(n1 / n2)
+      case (NUIntConst(n1), UIntConst(n2))  => alpha(n1 / n2)
       case (NUIntConst(n1), NUIntConst(n2)) => alpha(n1 / n2)
-      case _ => Top
+      case _                                => Top
     }
 
     override def %(that: Elem): Elem = (this, that) match {
@@ -774,30 +757,30 @@ object DefaultNumber extends NumDomain {
       /* 11.5.3 first */
       case (NaN, _) | (_, NaN) => NaN
       /* 11.5.3 third */
-      case (PosInf | NegInf, _) => NaN
+      case (PosInf | NegInf, _)              => NaN
       case (_, UIntConst(0) | NUIntConst(0)) => NaN
       /* 11.5.3 fourth */
       case (UIntConst(_) | NUIntConst(_), PosInf | NegInf | Inf) => this
       /* 11.5.3 fifth */
       case (UIntConst(0) | NUIntConst(0), UIntConst(_) | NUIntConst(_)) => this
       /* 11.5.3 sixth */
-      case (UIntConst(n1), UIntConst(n2)) => alpha(n1 % n2)
-      case (UIntConst(n1), NUIntConst(n2)) => alpha(n1 % n2)
-      case (NUIntConst(n1), UIntConst(n2)) => alpha(n1 % n2)
+      case (UIntConst(n1), UIntConst(n2))   => alpha(n1 % n2)
+      case (UIntConst(n1), NUIntConst(n2))  => alpha(n1 % n2)
+      case (NUIntConst(n1), UIntConst(n2))  => alpha(n1 % n2)
       case (NUIntConst(n1), NUIntConst(n2)) => alpha(n1 % n2)
-      case _ => Top
+      case _                                => Top
     }
 
     override def toString: String = this match {
-      case Top => "Top(number)"
-      case Bot => "⊥(number)"
-      case Inf => "Inf"
-      case PosInf => "+Inf"
-      case NegInf => "-Inf"
-      case NaN => "NaN"
-      case UInt => "UInt"
-      case NUInt => "NUInt"
-      case UIntConst(v) => v.toString
+      case Top           => "Top(number)"
+      case Bot           => "⊥(number)"
+      case Inf           => "Inf"
+      case PosInf        => "+Inf"
+      case NegInf        => "-Inf"
+      case NaN           => "NaN"
+      case UInt          => "UInt"
+      case NUInt         => "NUInt"
+      case UIntConst(v)  => v.toString
       case NUIntConst(0) => "-0"
       case NUIntConst(v) =>
         if (Math.floor(v) == v && !v.isInfinity) v.toLong.toString

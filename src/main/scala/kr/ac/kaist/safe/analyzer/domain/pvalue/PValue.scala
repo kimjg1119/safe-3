@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.domain
 
@@ -29,7 +27,7 @@ abstract class PValue extends Value {
     // Number: The result is false if the argument is +0, -0, or NaN;
     //         otherwise the result is true.
     case PosZero | NegZero | NaN => F
-    case _: Num => T
+    case _: Num                  => T
     // String: The result is false if the argument is the empty String
     //         (its length is zero); otherwise the result is true.
     case Str(str) => str != ""
@@ -72,7 +70,7 @@ abstract class PValue extends Value {
     number match {
       // 2. If number is NaN, +0, -0, +Infinity, or -Infinity, return +0.
       case NaN | PosZero | NegZero | PosInf | NegInf => PosZero
-      case _ =>
+      case _                                         =>
         // 3. Let posInt be sign(number) * floor(abs(number)).
         val posInt = number.sign * number.abs.floor
         // 4. Let int32bit be posInt modulo 2^32; that is,
@@ -94,7 +92,7 @@ abstract class PValue extends Value {
     number match {
       // 2. If number is NaN, +0, -0, +Infinity, or -Infinity, return +0.
       case NaN | PosZero | NegZero | PosInf | NegInf => PosZero
-      case _ =>
+      case _                                         =>
         // 3. Let posInt be sign(number) * floor(abs(number)).
         val posInt = number.sign * number.abs.floor
         // 4. Let int32bit be posInt modulo 2^32; that is,
@@ -114,7 +112,7 @@ abstract class PValue extends Value {
     number match {
       // 2. If number is NaN, +0, -0, +Infinity, or -Infinity, return +0.
       case NaN | PosZero | NegZero | PosInf | NegInf => PosZero
-      case _ =>
+      case _                                         =>
         // 3. Let posInt be sign(number) * floor(abs(number)).
         val posInt = number.sign * number.abs.floor
         // 4. Let int16bit be posInt modulo 2^16; that is,
@@ -147,16 +145,16 @@ abstract class PValue extends Value {
   def SameValue(that: PValue): Bool = Bool(this == that)
 
   // 11.4.6 Unary + Operator
-  def unary_+(): Num = ToNumber
+  def unary_+ : Num = ToNumber
 
   // 11.4.7 Unary - Operator
-  def unary_-(): Num = Num(-ToNumber.num)
+  def unary_- : Num = Num(-ToNumber.num)
 
   // 11.4.8 Bitwise NOT Operator ( ~ )
-  def unary_~(): Num = Num(~ToNumber.ToInt32.num.toInt)
+  def unary_~ : Num = Num(~ToNumber.ToInt32.num.toInt)
 
   // 11.4.9 Logical NOT Operator ( ! )
-  def unary_!(): Bool = Bool(!ToBoolean.bool)
+  def unary_! : Bool = Bool(!ToBoolean.bool)
 
   // 11.5 Multiplicative Operators
   // 11.5.1 Applying the * Operator
@@ -172,7 +170,7 @@ abstract class PValue extends Value {
   // 11.6.1 The Addition operator ( + )
   def +(that: PValue): PValue = (this, that) match {
     case (_: Str, _) | (_, _: Str) => Str(this.ToString.str + that.ToString.str)
-    case _ => Num(this.ToNumber.num + that.ToNumber.num)
+    case _                         => Num(this.ToNumber.num + that.ToNumber.num)
   }
 
   // 11.6.2 The Subtraction Operator ( - )
@@ -180,13 +178,19 @@ abstract class PValue extends Value {
 
   // 11.7 Bitwise Shift Operators
   // 11.7.1 The Left Shift Operator ( << )
-  def <<(that: PValue): Num = Num(this.ToInt32.num.toInt << (this.ToUint32.num.toLong & 0x1f))
+  def <<(that: PValue): Num = Num(
+    this.ToInt32.num.toInt << (this.ToUint32.num.toLong & 0x1f)
+  )
 
   // 11.7.2 The Signed Right Shift Operator ( >> )
-  def >>(that: PValue): Num = Num(this.ToInt32.num.toInt >> (this.ToUint32.num.toLong & 0x1f))
+  def >>(that: PValue): Num = Num(
+    this.ToInt32.num.toInt >> (this.ToUint32.num.toLong & 0x1f)
+  )
 
   // 11.7.3 The Unsigned Right Shift Operator ( >>> )
-  def >>>(that: PValue): Num = Num(this.ToUint32.num.toLong >>> (this.ToUint32.num.toLong & 0x1f))
+  def >>>(that: PValue): Num = Num(
+    this.ToUint32.num.toLong >>> (this.ToUint32.num.toLong & 0x1f)
+  )
 
   // 11.8 Relational Operators
   // 11.8.1 The Less-than Operator ( < )
@@ -204,48 +208,51 @@ abstract class PValue extends Value {
   // 11.8.5 The Abstract Relational Comparison Algorithm
   private def compare(that: PValue): Option[Bool] = (this, that) match {
     case (x: Str, y: Str) => Some(Bool(x.str < y.str))
-    case (x, y) => (x.ToNumber, y.ToNumber) match {
-      case (NaN, _) | (_, NaN) => None
-      case (Num(nx), Num(ny)) => Some(Bool(nx < ny))
-    }
+    case (x, y) =>
+      (x.ToNumber, y.ToNumber) match {
+        case (NaN, _) | (_, NaN) => None
+        case (Num(nx), Num(ny))  => Some(Bool(nx < ny))
+      }
   }
 
   // 11.9.1 TheEqualsOperator(==)
   // 11.9.3 The Abstract Equality Comparison Algorithm
   def Equals(that: PValue): Bool = (this, that) match {
     case (Undef, Undef) | (Null, Null) => T
-    case (x: Num, y: Num) => (x, y) match {
-      case (Num.NaN, _) | (_, Num.NaN) => F
-      case _ if x SameValue y => T
-      case (Num.PosZero, Num.NegZero) => T
-      case (Num.NegZero, Num.PosZero) => T
-      case _ => F
-    }
-    case (x: Str, y: Str) => x SameValue y
+    case (x: Num, y: Num) =>
+      (x, y) match {
+        case (Num.NaN, _) | (_, Num.NaN) => F
+        case _ if x SameValue y          => T
+        case (Num.PosZero, Num.NegZero)  => T
+        case (Num.NegZero, Num.PosZero)  => T
+        case _                           => F
+      }
+    case (x: Str, y: Str)   => x SameValue y
     case (x: Bool, y: Bool) => x SameValue y
-    case (Null, Undef) => T
-    case (Undef, Null) => T
-    case (x: Num, y: Str) => x Equals y.ToNumber
-    case (x: Str, y: Num) => x.ToNumber Equals y
-    case (x: Bool, y) => x.ToNumber Equals y
-    case (x, y: Bool) => x Equals y.ToNumber
-    case _ => F
+    case (Null, Undef)      => T
+    case (Undef, Null)      => T
+    case (x: Num, y: Str)   => x Equals y.ToNumber
+    case (x: Str, y: Num)   => x.ToNumber Equals y
+    case (x: Bool, y)       => x.ToNumber Equals y
+    case (x, y: Bool)       => x Equals y.ToNumber
+    case _                  => F
   }
 
   // 11.9.4 The Strict Equals Operator ( StrictEquals )
   // 11.9.6 The Strict Equality Comparison Algorithm
   def StrictEquals(that: PValue): Bool = (this, that) match {
     case (Undef, Undef) | (Null, Null) => T
-    case (x: Num, y: Num) => (x, y) match {
-      case (Num.NaN, _) | (_, Num.NaN) => F
-      case _ if x SameValue y => T
-      case (Num.PosZero, Num.NegZero) => T
-      case (Num.NegZero, Num.PosZero) => T
-      case _ => F
-    }
-    case (x: Str, y: Str) => x SameValue y
+    case (x: Num, y: Num) =>
+      (x, y) match {
+        case (Num.NaN, _) | (_, Num.NaN) => F
+        case _ if x SameValue y          => T
+        case (Num.PosZero, Num.NegZero)  => T
+        case (Num.NegZero, Num.PosZero)  => T
+        case _                           => F
+      }
+    case (x: Str, y: Str)   => x SameValue y
     case (x: Bool, y: Bool) => x SameValue y
-    case _ => F
+    case _                  => F
   }
 
   // 11.10 Binary Bitwise Operators

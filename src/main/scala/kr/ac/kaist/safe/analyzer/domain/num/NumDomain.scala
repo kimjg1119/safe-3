@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.domain
 
@@ -50,19 +48,20 @@ trait NumDomain extends AbsDomain[Num] { domain: NumDomain =>
     def ToString: AbsStr = alpha(_.ToString)(AbsStr)(this)
 
     // 9.12 The SameValue Algorithm
-    def SameValue(that: Elem): AbsBool = alpha(_ SameValue _)(AbsBool)(this, that)
+    def SameValue(that: Elem): AbsBool =
+      alpha(_ SameValue _)(AbsBool)(this, that)
 
     // 11.4.6 Unary + Operator
-    def unary_+(): Elem = alpha(+_)(domain)(this)
+    def unary_+ : Elem = alpha(+_)(domain)(this)
 
     // 11.4.7 Unary - Operator
-    def unary_-(): Elem = alpha(-_)(domain)(this)
+    def unary_- : Elem = alpha(-_)(domain)(this)
 
     // 11.4.8 Bitwise NOT Operator ( ~ )
-    def unary_~(): Elem = alpha(~_)(domain)(this)
+    def unary_~ : Elem = alpha(~_)(domain)(this)
 
     // 11.4.9 Logical NOT Operator ( ! )
-    def unary_!(): AbsBool = alpha(!_)(AbsBool)(this)
+    def unary_! : AbsBool = alpha(!_)(AbsBool)(this)
 
     // 11.5 Multiplicative Operators
     // 11.5.1 Applying the * Operator
@@ -110,7 +109,8 @@ trait NumDomain extends AbsDomain[Num] { domain: NumDomain =>
 
     // 11.9.4 The Strict Equals Operator ( StrictEquals )
     // 11.9.6 The Strict Equality Comparison Algorithm
-    def StrictEquals(that: Elem): AbsBool = alpha(_ StrictEquals _)(AbsBool)(this, that)
+    def StrictEquals(that: Elem): AbsBool =
+      alpha(_ StrictEquals _)(AbsBool)(this, that)
 
     // 11.10 BinaryBitwiseOperators
     def &(that: Elem): Elem = alpha(_ & _)(domain)(this, that)

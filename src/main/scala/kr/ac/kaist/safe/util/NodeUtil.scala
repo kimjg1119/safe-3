@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.util
 
@@ -21,9 +19,6 @@ import java.io.BufferedWriter
 import java.io.IOException
 
 object NodeUtil {
-  // hash map
-  type Map[K, V] = HashMap[K, V]
-
   ////////////////////////////////////////////////////////////////
   // local mutable (TODO have to handle)
   ////////////////////////////////////////////////////////////////
@@ -302,7 +297,8 @@ object NodeUtil {
 
   // For modeling in JavaScript
   val jsModelsName = "jsModels"
-  val jsModelsBase = BASE_DIR + "/src/main/resources/" + jsModelsName + "/built_in/"
+  val jsModelsBase =
+    BASE_DIR + "/src/main/resources/" + jsModelsName + "/built_in/"
 
   def isModeled(node: ASTNode): Boolean =
     node.info.span.fileName.contains(jsModelsName)
@@ -316,7 +312,9 @@ object NodeUtil {
     INTERNAL_SYMBOL + n + INTERNAL_SYMBOL + "%013d".format(getIId)
   // unique name generation for global names
   def freshGlobalName(n: String): String = GLOBAL_PREFIX + n
-  def funexprName(span: Span): String = freshName("funexpr@" + span.toStringWithoutFiles)
+  def funexprName(span: Span): String = freshName(
+    "funexpr@" + span.toStringWithoutFiles
+  )
 
   def isInternalAPI(s: String): Boolean =
     isInternalCall(s) || isInternalValue(s) || isInternalVar(s)
@@ -407,50 +405,74 @@ object NodeUtil {
   }
 
   def ppAST(s: StringBuilder, str: String): Unit =
-    s.append(str.foldLeft("")((res, c) => c match {
-      case '\u0008' => res + '\b'
-      case '\t' => res + '\t'
-      case '\n' => res + '\n'
-      case '\f' => res + '\f'
-      case '\r' => res + '\r'
-      case '\u000b' => res + '\u000b'
-      case '"' => res + '"'
-      case '\'' => res + "'"
-      case '\\' => res + '\\'
-      case c => res + c
-    }))
+    s.append(
+      str.foldLeft("")((res, c) =>
+        c match {
+          case '\u0008' => res + '\b'
+          case '\t'     => res + '\t'
+          case '\n'     => res + '\n'
+          case '\f'     => res + '\f'
+          case '\r'     => res + '\r'
+          case '\u000b' => res + '\u000b'
+          case '"'      => res + '"'
+          case '\''     => res + "'"
+          case '\\'     => res + '\\'
+          case c        => res + c
+        }
+      )
+    )
 
   def pp(str: String): String =
-    str.foldLeft("")((res, c) => c match {
-      case '\u0008' => res + "\\b"
-      case '\t' => res + "\\t"
-      case '\n' => res + "\\n"
-      case '\f' => res + "\\f"
-      case '\r' => res + "\\r"
-      case '\u000b' => res + "\\v"
-      case '"' => res + "\\\""
-      case '\'' => res + "'"
-      case '\\' => res + "\\"
-      case c => res + c
-    })
+    str.foldLeft("")((res, c) =>
+      c match {
+        case '\u0008' => res + "\\b"
+        case '\t'     => res + "\\t"
+        case '\n'     => res + "\\n"
+        case '\f'     => res + "\\f"
+        case '\r'     => res + "\\r"
+        case '\u000b' => res + "\\v"
+        case '"'      => res + "\\\""
+        case '\''     => res + "'"
+        case '\\'     => res + "\\"
+        case c        => res + c
+      }
+    )
 
   def getIndent(indent: Int): String = {
     val s: StringBuilder = new StringBuilder
     for (i <- 0 to indent - 1) s.append("  ")
     s.toString
   }
-  def join(indent: Int, all: List[Node], sep: String, result: StringBuilder): StringBuilder = all match {
+  def join(
+      indent: Int,
+      all: List[Node],
+      sep: String,
+      result: StringBuilder
+  ): StringBuilder = all match {
     case Nil => result
-    case _ => result.length match {
-      case 0 => {
-        join(indent, all.tail, sep, result.append(all.head.toString(indent)))
+    case _ =>
+      result.length match {
+        case 0 => {
+          join(indent, all.tail, sep, result.append(all.head.toString(indent)))
+        }
+        case _ =>
+          if (result.length > PRINT_WIDTH && sep.equals(", "))
+            join(
+              indent,
+              all.tail,
+              sep,
+              result
+                .append(", " + LINE_SEP + getIndent(indent))
+                .append(all.head.toString(indent))
+            )
+          else
+            join(
+              indent,
+              all.tail,
+              sep,
+              result.append(sep).append(all.head.toString(indent))
+            )
       }
-      case _ =>
-        if (result.length > PRINT_WIDTH && sep.equals(", "))
-          join(indent, all.tail, sep, result.append(", " + LINE_SEP + getIndent(indent)).append(all.head.toString(indent)))
-        else
-          join(indent, all.tail, sep, result.append(sep).append(all.head.toString(indent)))
-    }
   }
 
   ////////////////////////////////////////////////////////////////
@@ -480,31 +502,33 @@ object NodeUtil {
 
   def commentLog(span: Span, message: String): Unit =
     if (keepComments) {
-      if (!comment.isDefined ||
-        (!comment.get.txt.startsWith("/*") && !comment.get.txt.startsWith("//")))
+      if (
+        !comment.isDefined ||
+        (!comment.get.txt.startsWith("/*") && !comment.get.txt.startsWith("//"))
+      )
         comment = Some[Comment](new Comment(makeASTNodeInfo(span), message))
       else {
         val com = comment.get
         if (!com.txt.equals(message))
-          comment = Some[Comment](new Comment(
-            makeASTNodeInfo(com.info.span + span),
-            com.txt + LINE_SEP + message
-          ))
+          comment = Some[Comment](
+            new Comment(
+              makeASTNodeInfo(com.info.span + span),
+              com.txt + LINE_SEP + message
+            )
+          )
       }
     }
 
   def adjustCallSpan(finish: Span, expr: LHS): Span = expr match {
     case Parenthesized(info, body) => body.span + finish
-    case _ => finish
+    case _                         => finish
   }
 
   def inParentheses(str: String): String = {
     val charArr = str.toCharArray
     var parenthesized = true
     var depth = 0
-    for (
-      c <- charArr if parenthesized
-    ) {
+    for (c <- charArr if parenthesized) {
       if (c == '(') depth += 1
       else if (c == ')') depth -= 1
       else if (depth == 0) parenthesized = false
@@ -513,40 +537,84 @@ object NodeUtil {
     else new StringBuilder("(").append(str).append(")").toString
   }
 
-  def prFtn(s: StringBuilder, indent: Int, fds: List[FunDecl], vds: List[VarDecl],
-    body: List[Stmt]): Unit = {
+  def prFtn(
+      s: StringBuilder,
+      indent: Int,
+      fds: List[FunDecl],
+      vds: List[VarDecl],
+      body: List[Stmt]
+  ): Unit = {
     fds match {
       case Nil =>
       case _ =>
-        s.append(getIndent(indent + 1)).append(join(indent + 1, fds, LINE_SEP + getIndent(indent + 1), new StringBuilder("")))
+        s.append(getIndent(indent + 1))
+          .append(
+            join(
+              indent + 1,
+              fds,
+              LINE_SEP + getIndent(indent + 1),
+              new StringBuilder("")
+            )
+          )
         s.append(LINE_SEP).append(getIndent(indent))
     }
     vds match {
       case Nil =>
       case _ =>
         s.append(getIndent(indent + 1))
-        vds.foreach(vd => vd match {
-          case VarDecl(_, n, _, _) =>
-            s.append("var " + n.text + ";" + LINE_SEP + getIndent(indent + 1))
-        })
+        vds.foreach(vd =>
+          vd match {
+            case VarDecl(_, n, _, _) =>
+              s.append("var " + n.text + ";" + LINE_SEP + getIndent(indent + 1))
+          }
+        )
         s.append(LINE_SEP).append(getIndent(indent))
     }
-    s.append(getIndent(indent + 1)).append(join(indent + 1, body, LINE_SEP + getIndent(indent + 1), new StringBuilder("")))
+    s.append(getIndent(indent + 1))
+      .append(
+        join(
+          indent + 1,
+          body,
+          LINE_SEP + getIndent(indent + 1),
+          new StringBuilder("")
+        )
+      )
   }
 
-  def prUseStrictDirective(s: StringBuilder, indent: Int, fds: List[FunDecl], vds: List[VarDecl], body: Stmts): Unit =
+  def prUseStrictDirective(
+      s: StringBuilder,
+      indent: Int,
+      fds: List[FunDecl],
+      vds: List[VarDecl],
+      body: Stmts
+  ): Unit =
     prUseStrictDirective(s, indent, fds, vds, List(body))
 
-  def prUseStrictDirective(s: StringBuilder, indent: Int, fds: List[FunDecl], vds: List[VarDecl], stmts: List[Stmts]): Unit =
+  def prUseStrictDirective(
+      s: StringBuilder,
+      indent: Int,
+      fds: List[FunDecl],
+      vds: List[VarDecl],
+      stmts: List[Stmts]
+  ): Unit =
     fds.find(fd => fd.strict) match {
-      case Some(_) => s.append(getIndent(indent)).append("\"use strict\";").append(LINE_SEP)
-      case None => vds.find(vd => vd.strict) match {
-        case Some(_) => s.append(getIndent(indent)).append("\"use strict\";").append(LINE_SEP)
-        case None => stmts.find(stmts => stmts.strict) match {
-          case Some(_) => s.append(getIndent(indent)).append("\"use strict\";").append(LINE_SEP)
+      case Some(_) =>
+        s.append(getIndent(indent)).append("\"use strict\";").append(LINE_SEP)
+      case None =>
+        vds.find(vd => vd.strict) match {
+          case Some(_) =>
+            s.append(getIndent(indent))
+              .append("\"use strict\";")
+              .append(LINE_SEP)
           case None =>
+            stmts.find(stmts => stmts.strict) match {
+              case Some(_) =>
+                s.append(getIndent(indent))
+                  .append("\"use strict\";")
+                  .append(LINE_SEP)
+              case None =>
+            }
         }
-      }
     }
 
   object AddLinesProgram extends ASTWalker {
@@ -585,13 +653,14 @@ object NodeUtil {
       case FunDecl(i, getFtn, isStrict) =>
         val span = i.span
         val key = span.toString
-        val newInfo = if (map.contains(key)) new ASTNodeInfo(map.apply(key))
-        else {
-          val newSpan = span.addLines(line, offset)
-          offset = 0
-          map += (key -> newSpan)
-          new ASTNodeInfo(newSpan)
-        }
+        val newInfo =
+          if (map.contains(key)) new ASTNodeInfo(map.apply(key))
+          else {
+            val newSpan = span.addLines(line, offset)
+            offset = 0
+            map += (key -> newSpan)
+            new ASTNodeInfo(newSpan)
+          }
         super.walk(new FunDecl(newInfo, getFtn, isStrict))
     }
 
@@ -650,7 +719,7 @@ object NodeUtil {
 
     override def walk(e: LHS): LHS = e match {
       case fe: FunExpr => walk(fe)
-      case _ => super.walk(e)
+      case _           => super.walk(e)
     }
 
     override def walk(i: ASTNodeInfo): ASTNodeInfo = {
@@ -678,27 +747,28 @@ object NodeUtil {
 
     def simpl(stmts: List[Stmt]): List[Stmt] = stmts match {
       case Nil => Nil
-      case stmt :: rest => stmt match {
-        case _: Debugger =>
-          repeat = true; simplify(rest)
-        case _: EmptyStmt =>
-          repeat = true; simplify(rest)
-        case ABlock(_, Nil, _) =>
-          repeat = true; simplify(rest)
-        case ABlock(_, ABlock(_, Nil, _) :: stmts, _) =>
-          repeat = true;
-          simplify(stmts) ++ simplify(rest)
-        case ABlock(_, ABlock(_, ss, _) :: stmts, _) =>
-          repeat = true;
-          simplify(ss) ++ simplify(stmts) ++ simplify(rest)
-        case ABlock(_, s @ List(stmt), _) =>
-          repeat = true;
-          simplify(s) ++ simplify(rest)
-        case ABlock(info, sts, b) =>
-          repeat = true;
-          List(ABlock(info, simplify(sts), b)) ++ simplify(rest)
-        case _ => List(stmt) ++ simplify(rest)
-      }
+      case stmt :: rest =>
+        stmt match {
+          case _: Debugger =>
+            repeat = true; simplify(rest)
+          case _: EmptyStmt =>
+            repeat = true; simplify(rest)
+          case ABlock(_, Nil, _) =>
+            repeat = true; simplify(rest)
+          case ABlock(_, ABlock(_, Nil, _) :: stmts, _) =>
+            repeat = true;
+            simplify(stmts) ++ simplify(rest)
+          case ABlock(_, ABlock(_, ss, _) :: stmts, _) =>
+            repeat = true;
+            simplify(ss) ++ simplify(stmts) ++ simplify(rest)
+          case ABlock(_, s @ List(stmt), _) =>
+            repeat = true;
+            simplify(s) ++ simplify(rest)
+          case ABlock(info, sts, b) =>
+            repeat = true;
+            List(ABlock(info, simplify(sts), b)) ++ simplify(rest)
+          case _ => List(stmt) ++ simplify(rest)
+        }
     }
 
     override def walk(node: FunDecl): FunDecl = node match {
@@ -708,31 +778,61 @@ object NodeUtil {
 
     override def walk(node: Program): Program = node match {
       case Program(info, TopLevel(i, fds, vds, program)) =>
-        Program(info, TopLevel(i, fds.map(walk), vds,
-          program.map(ss => ss match {
-            case Stmts(i, s, f) =>
-              Stmts(i, simplify(s.map(walk)), f)
-          })))
+        Program(
+          info,
+          TopLevel(
+            i,
+            fds.map(walk),
+            vds,
+            program.map(ss =>
+              ss match {
+                case Stmts(i, s, f) =>
+                  Stmts(i, simplify(s.map(walk)), f)
+              }
+            )
+          )
+        )
     }
 
     override def walk(node: Stmt): Stmt = node match {
       case ABlock(info, List(stmt), b) =>
         ABlock(info, List(walk(stmt)), b)
-      case ABlock(info, ABlock(_, Nil, _) :: stmts, b) => walk(ABlock(info, stmts, b))
-      case ABlock(info, ABlock(_, ss, _) :: stmts, b) => walk(ABlock(info, ss ++ stmts, b))
+      case ABlock(info, ABlock(_, Nil, _) :: stmts, b) =>
+        walk(ABlock(info, stmts, b))
+      case ABlock(info, ABlock(_, ss, _) :: stmts, b) =>
+        walk(ABlock(info, ss ++ stmts, b))
       case ABlock(info, stmts, b) =>
         ABlock(info, simplify(stmts.map(walk)), b)
       case Switch(info, cond, frontCases, Some(stmts), backCases) =>
-        Switch(info, cond, frontCases.map(walk),
-          Some(simplify(stmts.map(walk))), backCases.map(walk))
+        Switch(
+          info,
+          cond,
+          frontCases.map(walk),
+          Some(simplify(stmts.map(walk))),
+          backCases.map(walk)
+        )
       case _ => super.walk(node)
     }
 
     override def walk(node: Functional): Functional = node match {
-      case Functional(i, fds, vds, Stmts(info, body, strict), name, params, bodyS) =>
-        Functional(i, fds.map(walk), vds,
+      case Functional(
+            i,
+            fds,
+            vds,
+            Stmts(info, body, strict),
+            name,
+            params,
+            bodyS
+          ) =>
+        Functional(
+          i,
+          fds.map(walk),
+          vds,
           Stmts(info, simplify(body.map(walk)), strict),
-          name, params, bodyS)
+          name,
+          params,
+          bodyS
+        )
     }
   }
 
@@ -762,8 +862,16 @@ object NodeUtil {
 
     override def walk(node: IRFunctional): IRFunctional = node match {
       case IRFunctional(astF, f, n, params, args, fds, vds, body) =>
-        IRFunctional(astF, f, n, params, simplify(args),
-          fds.map { fd: IRFunDecl => walk(fd) }, vds, simplify(body))
+        IRFunctional(
+          astF,
+          f,
+          n,
+          params,
+          simplify(args),
+          fds.map { fd: IRFunDecl => walk(fd) },
+          vds,
+          simplify(body)
+        )
     }
 
     override def walk(node: IRFunDecl): IRFunDecl = node match {
@@ -784,19 +892,22 @@ object NodeUtil {
     // Simplify a list of IRStmts
     def simplify(stmts: List[IRStmt]): List[IRStmt] = stmts match {
       case Nil => Nil
-      case stmt :: rest => stmt match {
-        // Remove an empty internal IRStmt list
-        case IRSeq(_, Nil) => simplify(rest)
+      case stmt :: rest =>
+        stmt match {
+          // Remove an empty internal IRStmt list
+          case IRSeq(_, Nil) => simplify(rest)
 
-        // Remove a self assignment IRStmt
-        case IRExprStmt(_, lhs, rhs: IRId, ref) if lhs.uniqueName.equals(rhs.uniqueName) => simplify(rest)
+          // Remove a self assignment IRStmt
+          case IRExprStmt(_, lhs, rhs: IRId, ref)
+              if lhs.uniqueName.equals(rhs.uniqueName) =>
+            simplify(rest)
 
-        // Simplify the following case:
-        //     <>ignore<>1 = expr
-        //     <>temp = <>ignore<>1
-        // to the following:
-        //     <>temp = expr
-        /*
+          // Simplify the following case:
+          //     <>ignore<>1 = expr
+          //     <>temp = <>ignore<>1
+          // to the following:
+          //     <>temp = expr
+          /*
         case first:IRAssign => rest match {
           case (second@SIRExprStmt(_, _, _, right:IRId, _))::others =>
             if (first.getLhs.getUniqueName.equals(right.getUniqueName) &&
@@ -805,10 +916,10 @@ object NodeUtil {
             } else walk(first).asInstanceOf[IRStmt]::simpl(rest)
           case _ => walk(first).asInstanceOf[IRStmt]::simpl(rest)
         }
-        */
+           */
 
-        case _ => walk(stmt) :: simplify(rest)
-      }
+          case _ => walk(stmt) :: simplify(rest)
+        }
     }
   }
 }
