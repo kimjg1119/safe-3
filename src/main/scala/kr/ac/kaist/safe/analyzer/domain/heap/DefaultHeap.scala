@@ -1,40 +1,44 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.domain
 
 import kr.ac.kaist.safe.LINE_SEP
 import kr.ac.kaist.safe.analyzer.model.GLOBAL_LOC
 import kr.ac.kaist.safe.util._
-import kr.ac.kaist.safe.nodes.cfg.{ CFGId, GlobalVar }
+import kr.ac.kaist.safe.nodes.cfg.{CFGId, GlobalVar}
 
 // default heap abstract domain
 object DefaultHeap extends HeapDomain {
+
   private val EmptyMap: Map[Loc, AbsObj] = Map()
 
   case object Top extends Elem
   case object Bot extends Elem
   val Empty: Elem = HeapMap(Map(), LocSet.Bot, LocSet.Bot)
-  case class HeapMap(map: Map[Loc, AbsObj], merged: LocSet, changed: LocSet) extends Elem
+  case class HeapMap(map: Map[Loc, AbsObj], merged: LocSet, changed: LocSet)
+      extends Elem
 
   def alpha(heap: Heap): Elem = {
-    val map = heap.map.foldLeft(EmptyMap) {
-      case (map, (loc, obj)) => map + (loc -> AbsObj(obj))
+    val map = heap.map.foldLeft(EmptyMap) { case (map, (loc, obj)) =>
+      map + (loc -> AbsObj(obj))
     }
     HeapMap(map, LocSet.Bot, LocSet.Bot)
   }
 
-  def apply(map: Map[Loc, AbsObj], merged: LocSet): Elem = HeapMap(Map(map.toSeq: _*), merged, LocSet.Bot)
+  def apply(map: Map[Loc, AbsObj], merged: LocSet): Elem =
+    HeapMap(Map(map.toSeq: _*), merged, LocSet.Bot)
 
   sealed abstract class Elem extends ElemTrait {
+
+    import MapHelper._
+
     def gamma: ConSet[Heap] = ConInf // TODO more precise
 
     def getSingle: ConSingle[Heap] = ConMany // TODO more precise
@@ -51,8 +55,8 @@ object DefaultHeap extends HeapDomain {
 
     def ⊔(that: Elem): Elem = (this, that) match {
       case (Top, _) | (_, Top) => Top
-      case (left, Bot) => left
-      case (Bot, right) => right
+      case (left, Bot)         => left
+      case (Bot, right)        => right
       case (left: HeapMap, right: HeapMap) =>
         val newMap = left.map.unionWithIdem(right.map)(_ ⊔ _)
         val newMerged = left.merged ⊔ right.merged
@@ -61,8 +65,8 @@ object DefaultHeap extends HeapDomain {
     }
 
     def ⊓(that: Elem): Elem = (this, that) match {
-      case (left, Top) => left
-      case (Top, right) => right
+      case (left, Top)         => left
+      case (Top, right)        => right
       case (Bot, _) | (_, Bot) => Bot
       case (left: HeapMap, right: HeapMap) =>
         val newMap = left.map.intersectWithIdem(right.map)(_ ⊓ _)
@@ -88,25 +92,31 @@ object DefaultHeap extends HeapDomain {
     def get(loc: Loc): AbsObj = this match {
       case Top => AbsObj.Top
       case Bot => AbsObj.Bot
-      case HeapMap(map, _, _) => map.get(loc) match {
-        case Some(obj) => obj
-        case None => AbsObj.Bot
-      }
+      case HeapMap(map, _, _) =>
+        map.get(loc) match {
+          case Some(obj) => obj
+          case None      => AbsObj.Bot
+        }
     }
 
     def get(locSet: LocSet): AbsObj = locSet.foldLeft(AbsObj.Bot) {
       case (obj, loc) => obj ⊔ get(loc)
     }
 
-    private def weakUpdated(m: Map[Loc, AbsObj], loc: Loc, newObj: AbsObj): Map[Loc, AbsObj] = m.get(loc) match {
+    private def weakUpdated(
+        m: Map[Loc, AbsObj],
+        loc: Loc,
+        newObj: AbsObj
+    ): Map[Loc, AbsObj] = m.get(loc) match {
       case Some(oldObj) => m.updated(loc, oldObj ⊔ newObj)
-      case None => m.updated(loc, newObj)
+      case None         => m.updated(loc, newObj)
     }
 
     def weakUpdate(loc: Loc, obj: AbsObj): Elem = this match {
       case Top => Top
       case Bot => Bot
-      case HeapMap(map, merged, changed) => HeapMap(weakUpdated(map, loc, obj), merged, changed + loc)
+      case HeapMap(map, merged, changed) =>
+        HeapMap(weakUpdated(map, loc, obj), merged, changed + loc)
     }
 
     def update(loc: Loc, obj: AbsObj): Elem = this match {
@@ -130,7 +140,7 @@ object DefaultHeap extends HeapDomain {
           case Some(fromObj) => {
             val (newObj, newMerged) = map.get(to) match {
               case Some(toObj) => (fromObj ⊔ toObj, merged + to)
-              case None => (fromObj, merged)
+              case None        => (fromObj, merged)
             }
             (map - from + (to -> newObj), newMerged)
           }
@@ -147,11 +157,12 @@ object DefaultHeap extends HeapDomain {
     def remove(locs: Set[Loc]): Elem = this match {
       case Top => Top
       case Bot => Bot
-      case HeapMap(map, merged, changed) => HeapMap(
-        (map -- locs).map { case (k, v) => k -> v.remove(locs) },
-        merged.remove(locs),
-        changed ⊔ LocSet(locs)
-      )
+      case HeapMap(map, merged, changed) =>
+        HeapMap(
+          (map -- locs).map { case (k, v) => k -> v.remove(locs) },
+          merged.remove(locs),
+          changed ⊔ LocSet(locs)
+        )
     }
 
     def alloc(loc: Loc): Elem = this match {
@@ -167,14 +178,14 @@ object DefaultHeap extends HeapDomain {
     }
 
     def getLocSet: LocSet = this match {
-      case Top => LocSet.Top
-      case Bot => LocSet.Bot
+      case Top                => LocSet.Top
+      case Bot                => LocSet.Bot
       case HeapMap(map, _, _) => LocSet(map.keySet)
     }
 
     def domIn(loc: Loc): Boolean = this match {
-      case Top => true
-      case Bot => false
+      case Top                => true
+      case Bot                => false
       case HeapMap(map, _, _) => map.contains(loc)
     }
 
@@ -193,14 +204,17 @@ object DefaultHeap extends HeapDomain {
     def toStringLoc(loc: Loc): Option[String] = this match {
       case Top => Some(toStringLoc(loc, AbsObj.Top, false))
       case Bot => None
-      case HeapMap(map, _, _) => map.get(loc).map(toStringLoc(loc, _, isConcrete(loc)))
+      case HeapMap(map, _, _) =>
+        map.get(loc).map(toStringLoc(loc, _, isConcrete(loc)))
     }
 
     ////////////////////////////////////////////////////////////////
     // Predicates
     ////////////////////////////////////////////////////////////////
     def hasConstruct(loc: Loc): AbsBool = {
-      val isElemIn = get(loc).fold(AbsBool.False) { obj => (obj contains IConstruct) }
+      val isElemIn = get(loc).fold(AbsBool.False) { obj =>
+        (obj contains IConstruct)
+      }
       val b1 =
         if (AbsBool.True ⊑ isElemIn) AbsBool.True
         else AbsBool.Bot
@@ -211,7 +225,9 @@ object DefaultHeap extends HeapDomain {
     }
 
     def hasInstance(loc: Loc): AbsBool = {
-      val isElemIn = get(loc).fold(AbsBool.False) { obj => (obj contains IHasInstance) }
+      val isElemIn = get(loc).fold(AbsBool.False) { obj =>
+        (obj contains IHasInstance)
+      }
       val b1 =
         if (AbsBool.True ⊑ isElemIn) AbsBool.True
         else AbsBool.Bot
@@ -317,7 +333,7 @@ object DefaultHeap extends HeapDomain {
     // Store
     ////////////////////////////////////////////////////////////////
     def propStore(loc: Loc, absStr: AbsStr, value: AbsValue): Elem = {
-      //TODO: propagate type error of [[Put]] to semantics
+      // TODO: propagate type error of [[Put]] to semantics
       val findingObj = this.get(loc)
       val (obj, _) = findingObj.Put(absStr, value, true, this)
       this.update(loc, obj)
@@ -335,8 +351,8 @@ object DefaultHeap extends HeapDomain {
     }
 
     def getMap: Option[Map[Loc, AbsObj]] = this match {
-      case Top => None
-      case Bot => None
+      case Top                => None
+      case Bot                => None
       case HeapMap(map, _, _) => Some(map)
     }
 
@@ -344,30 +360,30 @@ object DefaultHeap extends HeapDomain {
     // location status check
     ////////////////////////////////////////////////////////////////
     def isConcrete(loc: Loc): Boolean = this match {
-      case Top => false
-      case Bot => true
+      case Top                   => false
+      case Bot                   => true
       case HeapMap(_, merged, _) => !(merged contains loc)
     }
 
     def isChanged(loc: Loc): Boolean = this match {
-      case Top => true
-      case Bot => false
+      case Top                    => true
+      case Bot                    => false
       case HeapMap(_, _, changed) => changed contains loc
     }
 
     // delete changed info
     def cleanChanged: Elem = this match {
       case HeapMap(map, merged, _) => HeapMap(map, merged, LocSet.Bot)
-      case _ => this
+      case _                       => this
     }
 
     // applied changed information
     def <<(that: Elem): Elem = (this, that) match {
       case (left: HeapMap, right: HeapMap) => {
-        val newMap = right.changed.foldLeft(left.map) {
-          case (map, loc) => right.map.get(loc) match {
+        val newMap = right.changed.foldLeft(left.map) { case (map, loc) =>
+          right.map.get(loc) match {
             case Some(obj) => map + (loc -> obj)
-            case None => map - loc
+            case None      => map - loc
           }
         }
         val newMerged = right.merged
