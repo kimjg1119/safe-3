@@ -1,13 +1,11 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2016-2018, KAIST.
- * All rights reserved.
- *
- * Use is subject to license terms.
- *
- * This distribution may include materials developed by third parties.
- * ****************************************************************************
- */
+/** *****************************************************************************
+  * Copyright (c) 2016-2018, KAIST. All rights reserved.
+  *
+  * Use is subject to license terms.
+  *
+  * This distribution may include materials developed by third parties.
+  * ****************************************************************************
+  */
 
 package kr.ac.kaist.safe.analyzer.console
 
@@ -37,7 +35,8 @@ class Console(
   private val terminal: Terminal = builder.build();
   private val cmds = Command.commands.map(_.name).asJavaCollection
   private val completer = new StringsCompleter(cmds)
-  private val reader = LineReaderBuilder.builder()
+  private val reader = LineReaderBuilder
+    .builder()
     .terminal(terminal)
     .completer(completer)
     .build()
@@ -52,16 +51,17 @@ class Console(
   // API
   ////////////////////////////////////////////////////////////////
 
-  override def runFixpoint(): Unit = {
+  override def runFixpoint: Unit = {
     val prepare = prepareToRunFixpoint
     lazy val (st, excSt) = getResult
-    val alreadyVisited = (debugMode || stopAlreadyVisited) && (visited contains cur)
+    val alreadyVisited =
+      (debugMode || stopAlreadyVisited) && (visited contains cur)
     val exitExc = (debugMode || stopExitExc) && (!excSt.isBottom)
     val oneSideBot = debugMode && (
       (st.heap.isBottom && !st.context.isBottom) ||
-      (st.context.isBottom && !st.heap.isBottom) ||
-      (excSt.heap.isBottom && !excSt.context.isBottom) ||
-      (excSt.context.isBottom && !excSt.heap.isBottom)
+        (st.context.isBottom && !st.heap.isBottom) ||
+        (excSt.heap.isBottom && !excSt.context.isBottom) ||
+        (excSt.context.isBottom && !excSt.heap.isBottom)
     )
     if (prepare || alreadyVisited || exitExc || oneSideBot) {
       if (alreadyVisited) println("[STOP] already visited CFGBlock.")
@@ -125,8 +125,8 @@ class Console(
       }
       case _ =>
         setPrompt(
-          tpList.zipWithIndex.map {
-            case (tp, idx) => s"[$idx] $tp" + LINE_SEP
+          tpList.zipWithIndex.map { case (tp, idx) =>
+            s"[$idx] $tp" + LINE_SEP
           }.mkString + s"select call context index > "
         )
         while ({
@@ -137,13 +137,14 @@ class Console(
               println("* current control point not changed.")
               false
             case "" => true
-            case line => !line.forall(_.isDigit) || (line.toInt match {
-              case idx if idx < len =>
-                cur = ControlPoint(block, tpList(idx))
-                println(s"* current control point changed.")
-                false
-              case _ => println(s"* given index is out of bound $len"); true
-            })
+            case line =>
+              !line.forall(_.isDigit) || (line.toInt match {
+                case idx if idx < len =>
+                  cur = ControlPoint(block, tpList(idx))
+                  println(s"* current control point changed.")
+                  false
+                case _ => println(s"* given index is out of bound $len"); true
+              })
           }
         }) {}
         setPrompt()

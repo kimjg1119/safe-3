@@ -69,7 +69,7 @@ class CmdActor() extends Actor {
       println("Participant Left " + uid)
       val entry = states(uid)
       if (entry != null) {
-        entry.subscriber ! Status.Success(Unit)
+        entry.subscriber ! Status.Success(())
         states -= uid
       }
     case Terminated(sub) ⇒ // clean up dead subscribers, but should have been removed when `ParticipantLeft`
