@@ -18,7 +18,7 @@
         "classpath": [
             "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/sbt/1.9.7/sbt-1.9.7.jar",
             "/home/ryute/.sbt/boot/scala-2.12.18/lib/scala-library.jar",
-            "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.13/sbt-bloop_2.12_1.0-1.5.13.jar",
+            "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.15/sbt-bloop_2.12_1.0-1.5.15.jar",
             "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/main_2.12/1.9.7/main_2.12-1.9.7.jar",
             "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.9.7/io_2.12-1.9.7.jar",
             "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/1.5.5/bloop-config_2.12-1.5.5.jar",
@@ -212,7 +212,7 @@
         "platform": {
             "name": "jvm",
             "config": {
-                "home": "/usr/lib/jvm/jdk21.0.2+13",
+                "home": "/usr/lib/jvm/java-11-openjdk-amd64",
                 "options": [
                     "-Duser.dir=/home/ryute/safe/project"
                 ]
@@ -221,14 +221,14 @@
                 
             ],
             "runtimeConfig": {
-                "home": "/usr/lib/jvm/jdk21.0.2+13",
+                "home": "/usr/lib/jvm/java-11-openjdk-amd64",
                 "options": [
                     "-Duser.dir=/home/ryute/safe/project"
                 ]
             },
             "classpath": [
                 "/home/ryute/safe/project/.bloop/safe-build/scala-2.12/sbt-1.0/classes",
-                "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.13/sbt-bloop_2.12_1.0-1.5.13.jar",
+                "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.15/sbt-bloop_2.12_1.0-1.5.15.jar",
                 "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/1.5.5/bloop-config_2.12-1.5.5.jar",
                 "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_2.12/2.4.0/jsoniter-scala-core_2.12-2.4.0.jar",
                 "/home/ryute/.sbt/boot/scala-2.12.18/lib/scala-library.jar"
@@ -239,17 +239,17 @@
                 {
                     "organization": "ch.epfl.scala",
                     "name": "sbt-bloop",
-                    "version": "1.5.13",
+                    "version": "1.5.15",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "sbt-bloop",
-                            "path": "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.13/sbt-bloop_2.12_1.0-1.5.13.jar"
+                            "path": "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.15/sbt-bloop_2.12_1.0-1.5.15.jar"
                         },
                         {
                             "name": "sbt-bloop",
                             "classifier": "sources",
-                            "path": "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.13/sbt-bloop_2.12_1.0-1.5.13-sources.jar"
+                            "path": "/home/ryute/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.5.15/sbt-bloop_2.12_1.0-1.5.15-sources.jar"
                         }
                     ]
                 },

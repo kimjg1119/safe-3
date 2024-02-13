@@ -35,20 +35,7 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
   // pair abstract element
   case class Elem(map: Map[K, AbsVOpt], default: AbsVOpt) extends ElemTrait {
 
-    // FIXME: Use extension method for compareOptionWithPartialOrder
-    type PartialOrder[B1] = (B1, B1) => Boolean
-    type OptionPartialOrder[B1] = (Option[B1], Option[B1]) => Boolean
-
-    implicit class MapExtensions[A, B](val self: Map[A, B]) {
-      def compareOptionWithPartialOrder[B1 >: B](
-          that: Map[A, B1]
-      )(order: OptionPartialOrder[B1]): Boolean = {
-        if (self eq that) true
-        else {
-          that.keySet.forall(k => order(None, that.get(k)))
-        }
-      }
-    }
+    import kr.ac.kaist.safe.util.MapHelper._
 
     ////////////////////////////////////////////////////////////////////////////
     // Domain member functions

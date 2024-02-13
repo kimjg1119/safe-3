@@ -141,6 +141,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-compiler" % scalaVersion.value % "scala-tool",
   "org.scalatest" %% "scalatest" % "3.2.17" % "test",
   "com.typesafe.akka" %% "akka-http" % "10.5.0",
+  "com.typesafe.akka" %% "akka-actor-typed" % "2.6.0",
   "io.spray" %% "spray-json" % "1.3.6",
   "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.2",
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.9.1",

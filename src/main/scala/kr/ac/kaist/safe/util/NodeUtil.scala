@@ -622,7 +622,7 @@ object NodeUtil {
     var offset = 0
     def addLines(node: Program, l: Int, o: Int): Program = {
       line = l; offset = o
-      map = new Map[String, Span]
+      map = Map.empty[String, Span]
       walk(node)
     }
 
@@ -637,7 +637,7 @@ object NodeUtil {
       } else (node, node.info.span)
     }
 
-    var map = new Map[String, Span]
+    var map = Map.empty[String, Span]
     override def walk(i: ASTNodeInfo): ASTNodeInfo = {
       val span = i.span
       val key = span.toString
@@ -699,17 +699,17 @@ object NodeUtil {
     var offset = 0
     def addLines(node: Expr, l: Int, o: Int): Expr = {
       line = l; offset = o
-      map = new Map[String, Span]
+      map = Map.empty[String, Span]
       walk(node)
     }
     def addLines(node: LHS, l: Int, o: Int): LHS = {
       line = l; offset = o
-      map = new Map[String, Span]
+      map = Map.empty[String, Span]
       walk(node)
     }
     def addLines(node: FunExpr, l: Int, o: Int): FunExpr = {
       line = l; offset = o
-      map = new Map[String, Span]
+      map = Map.empty[String, Span]
       walk(node)
     }
     var map = Map[String, Span]()
