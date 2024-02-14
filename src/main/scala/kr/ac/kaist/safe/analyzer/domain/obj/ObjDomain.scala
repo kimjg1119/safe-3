@@ -52,7 +52,7 @@ trait ObjDomain extends AbsDomain[Obj] {
   type Elem <: ElemTrait
 
   // abstract object element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     /* substitute from by to */
     def subsLoc(from: Loc, to: Loc): Elem
     def weakSubsLoc(from: Loc, to: Loc): Elem

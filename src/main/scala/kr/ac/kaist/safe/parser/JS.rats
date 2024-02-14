@@ -56,7 +56,7 @@ import java.nio.file.Files;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
-import scala.collection.JavaConversions;
+import scala.collection.JavaConverters;
 import scala.Option;
 import scala.Some;
 import scala.Tuple2;
@@ -75,7 +75,7 @@ body {
     static scala.collection.immutable.List<VarDecl> nilVds = toList(Collections.<VarDecl>emptyList());
     static scala.collection.immutable.List<Id> nilIds = toList(Collections.<Id>emptyList());
     static <T> scala.collection.immutable.List<T> toList(List<T> jList) {
-        return JavaConversions.asScalaBuffer(jList).toList();
+        return JavaConverters.asScalaBuffer(jList).toList();
     }
 
     Span createSpan(int start, int end) {

@@ -18,10 +18,10 @@ trait IValueDomain extends AbsDomain[IValue] {
   def apply(value: AbsValue, fidset: AbsFId): Elem
 
   // abstract internal value element
-  type Elem <: ElemTrait
+  type Elem <: IValueElemTrait
 
   // abstract internal value element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait IValueElemTrait extends AbsElemTrait { this: Elem =>
     val value: AbsValue
     val fidset: AbsFId
 

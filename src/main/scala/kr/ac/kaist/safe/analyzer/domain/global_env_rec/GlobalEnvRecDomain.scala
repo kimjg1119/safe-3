@@ -17,7 +17,7 @@ trait GlobalEnvRecDomain extends AbsDomain[GlobalEnvRec] {
   type Elem <: ElemTrait
 
   // abstract global environment element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     // 10.2.1.2.1 HasBinding(N)
     def HasBinding(name: String)(heap: AbsHeap): AbsBool
 

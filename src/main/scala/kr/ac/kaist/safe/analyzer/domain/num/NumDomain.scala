@@ -22,7 +22,7 @@ trait NumDomain extends AbsDomain[Num] { domain: NumDomain =>
   type Elem <: ElemTrait
 
   // abstract number element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     // 9.1 ToPrimitive
     def ToPrimitive: AbsPValue = alpha(_.ToPrimitive)(AbsPValue)(this)
 

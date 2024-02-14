@@ -23,7 +23,7 @@ trait BindingDomain extends AbsDomain[Binding] {
   type Elem <: ElemTrait
 
   // abstract binding element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val value: AbsValue
     val uninit: AbsAbsent
     val mutable: AbsBool

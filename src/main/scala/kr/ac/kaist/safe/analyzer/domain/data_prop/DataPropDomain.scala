@@ -26,7 +26,7 @@ trait DataPropDomain extends AbsDomain[DataProp] {
   type Elem <: ElemTrait
 
   // abstract data property element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val value: AbsValue
     val writable: AbsBool
     val enumerable: AbsBool

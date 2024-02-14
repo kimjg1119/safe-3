@@ -33,7 +33,7 @@ case class PMapDomain[K, V, VD <: AbsDomain[V]](
   def apply(map: Map[K, AbsVOpt], default: AbsVOpt): Elem = Elem(map, default)
 
   // pair abstract element
-  case class Elem(map: Map[K, AbsVOpt], default: AbsVOpt) extends ElemTrait {
+  case class Elem(map: Map[K, AbsVOpt], default: AbsVOpt) extends AbsElemTrait {
 
     import kr.ac.kaist.safe.util.MapHelper._
 

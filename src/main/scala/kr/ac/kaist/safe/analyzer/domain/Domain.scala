@@ -20,10 +20,10 @@ trait Domain {
   val Bot: Elem
 
   // element
-  type Elem <: ElemTrait
+  type Elem <: DomainElemTrait
 
   // element traits
-  protected trait ElemTrait { this: Elem =>
+  protected trait DomainElemTrait { this: Elem =>
     // bottom check
     def isBottom: Boolean = this == Bot
 

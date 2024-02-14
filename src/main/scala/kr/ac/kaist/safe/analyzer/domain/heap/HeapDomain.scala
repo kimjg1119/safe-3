@@ -24,7 +24,7 @@ trait HeapDomain extends AbsDomain[Heap] {
   type Elem <: ElemTrait
 
   // abstract heap element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     // lookup
     def get(loc: Loc): AbsObj
     def get(locSet: LocSet): AbsObj

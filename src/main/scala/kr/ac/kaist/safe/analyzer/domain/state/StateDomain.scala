@@ -22,7 +22,7 @@ trait StateDomain extends AbsDomain[State] {
   type Elem <: ElemTrait
 
   // abstract state element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val heap: AbsHeap
     val context: AbsContext
 

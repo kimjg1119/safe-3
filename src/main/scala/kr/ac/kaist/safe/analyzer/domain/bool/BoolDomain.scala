@@ -23,7 +23,7 @@ trait BoolDomain extends AbsDomain[Bool] {
   type Elem <: ElemTrait
 
   // abstract boolean element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     def StrictEquals(that: Elem): Elem
     def negate: Elem
     def &&(that: Elem): Elem

@@ -27,7 +27,7 @@ case class PairDomain[L, R, LD <: AbsDomain[L], RD <: AbsDomain[R]](
   lazy val Top: Elem = Pair(AbsL.Top, AbsR.Top)
 
   // pair abstract element
-  sealed trait Elem extends ElemTrait {
+  sealed trait Elem extends AbsElemTrait {
     ////////////////////////////////////////////////////////////////////////////
     // Domain member functions
     ////////////////////////////////////////////////////////////////////////////

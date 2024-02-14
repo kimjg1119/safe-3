@@ -23,7 +23,7 @@ trait EnvRecDomain extends AbsDomain[EnvRec] {
   type Elem <: ElemTrait
 
   // abstract environment record element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val decEnvRec: AbsDecEnvRec
     val globalEnvRec: AbsGlobalEnvRec
 

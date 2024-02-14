@@ -17,7 +17,7 @@ trait UndefDomain extends AbsDomain[Undef] {
   type Elem <: ElemTrait
 
   // abstract undefined element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     def StrictEquals(that: Elem): AbsBool
   }
 }

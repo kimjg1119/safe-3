@@ -28,7 +28,7 @@ object DefaultIValue extends IValueDomain {
   def apply(fidset: AbsFId): Elem = Bot.copy(fidset = fidset)
   def apply(value: AbsValue, fidset: AbsFId): Elem = Elem(value, fidset)
 
-  case class Elem(value: AbsValue, fidset: AbsFId) extends ElemTrait {
+  case class Elem(value: AbsValue, fidset: AbsFId) extends IValueElemTrait {
     def gamma: ConSet[IValue] = ConInf // TODO more precisely
 
     def getSingle: ConSingle[IValue] = ConMany

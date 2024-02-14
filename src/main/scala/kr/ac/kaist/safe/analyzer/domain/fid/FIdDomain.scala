@@ -22,7 +22,7 @@ trait FIdDomain extends AbsDomain[FId] {
   type Elem <: ElemTrait
 
   // abstract function id element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     def contains(fid: FunctionId): Boolean
     def exists(f: FunctionId => Boolean): Boolean
     def filter(f: FunctionId => Boolean): Elem

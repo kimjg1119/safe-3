@@ -42,10 +42,10 @@ trait AbsDomain[V] extends Domain {
   }
 
   // abstract element
-  type Elem <: ElemTrait
+  type Elem <: AbsElemTrait
 
   // abstract element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait AbsElemTrait extends DomainElemTrait { this: Elem =>
     def gamma: ConSet[V]
     def getSingle: ConSingle[V]
   }

@@ -32,7 +32,7 @@ object LocSet extends AbsDomain[Loc] {
   def alpha(loc: Loc): Elem = LSet(loc)
   override def alpha(locset: Set[Loc]): Elem = LSet(locset)
 
-  sealed abstract class Elem extends ElemTrait {
+  sealed abstract class Elem extends AbsElemTrait {
     def gamma: ConSet[Loc] = this match {
       case Top => throw LocTopGammaError // TODO ConFin(locSet)
       case LSet(set) => ConFin(set)

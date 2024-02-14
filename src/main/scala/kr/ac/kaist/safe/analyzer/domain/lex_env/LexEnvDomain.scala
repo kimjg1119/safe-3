@@ -59,7 +59,7 @@ trait LexEnvDomain extends AbsDomain[LexEnv] {
   type Elem <: ElemTrait
 
   // abstract lexical environment element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val record: AbsEnvRec
     val outer: LocSet
     val nullOuter: AbsAbsent

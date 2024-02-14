@@ -20,7 +20,7 @@ class SimpleDomain[V] extends AbsDomain[V] {
   def alpha(v: V): Elem = Top
 
   // simple abstract element
-  trait Elem extends ElemTrait {
+  trait Elem extends AbsElemTrait {
     ////////////////////////////////////////////////////////////////////////////
     // Domain member functions
     ////////////////////////////////////////////////////////////////////////////

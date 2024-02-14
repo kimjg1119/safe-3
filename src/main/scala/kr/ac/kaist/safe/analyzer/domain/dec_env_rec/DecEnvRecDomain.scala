@@ -26,7 +26,7 @@ trait DecEnvRecDomain extends AbsDomain[DecEnvRec] {
   type Elem <: ElemTrait
 
   // abstract declarative environment record element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     // 10.2.1.1.1 HasBinding(N)
     def HasBinding(name: String): AbsBool
 

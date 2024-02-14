@@ -23,7 +23,7 @@ trait ValueDomain extends AbsDomain[Value] {
   type Elem <: ElemTrait
 
   // abstract value element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val pvalue: AbsPValue
     val locset: LocSet
 

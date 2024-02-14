@@ -31,7 +31,7 @@ case class OptionDomain[V, VD <: AbsDomain[V]](
   def unapply(elem: Elem): Option[(AbsV, AbsAbsent)] = Some((elem.value, elem.absent))
 
   // pair abstract element
-  case class Elem(value: AbsV, absent: AbsAbsent) extends ElemTrait {
+  case class Elem(value: AbsV, absent: AbsAbsent) extends AbsElemTrait {
     ////////////////////////////////////////////////////////////////////////////
     // Domain member functions
     ////////////////////////////////////////////////////////////////////////////

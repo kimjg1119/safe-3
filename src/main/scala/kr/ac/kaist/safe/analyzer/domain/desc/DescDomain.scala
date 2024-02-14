@@ -27,7 +27,7 @@ trait DescDomain extends AbsDomain[Desc] {
   type Elem <: ElemTrait
 
   // abstract descriptor element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val value: (AbsValue, AbsAbsent)
     val writable: (AbsBool, AbsAbsent)
     val enumerable: (AbsBool, AbsAbsent)

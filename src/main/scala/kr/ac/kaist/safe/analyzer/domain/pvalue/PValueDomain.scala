@@ -25,7 +25,7 @@ trait PValueDomain extends AbsDomain[PValue] {
   type Elem <: ElemTrait
 
   // abstract primitive value element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     val undefval: AbsUndef
     val nullval: AbsNull
     val boolval: AbsBool

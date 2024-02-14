@@ -27,7 +27,7 @@ trait ContextDomain extends AbsDomain[Context] {
   type Elem <: ElemTrait
 
   // abstract context element traits
-  trait ElemTrait extends super.ElemTrait { this: Elem =>
+  trait ElemTrait extends AbsElemTrait { this: Elem =>
     // lookup
     def apply(loc: Loc): Option[AbsLexEnv]
     def apply(locSet: Set[Loc]): AbsLexEnv
