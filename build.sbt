@@ -136,12 +136,16 @@ unmanagedJars in Compile ++= Seq(
 )
 cleanFiles ++= Seq(file("src/main/java/kr/ac/kaist/safe/parser/"))
 
+// Use 2.8.0 instead of 2.7.0 due to conflict in library dependencies
+// https://github.com/akka/akka/pull/31823
+val AkkaVersion = "2.8.0"
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % scalaVersion.value,
   "org.scala-lang" % "scala-compiler" % scalaVersion.value % "scala-tool",
   "org.scalatest" %% "scalatest" % "3.2.17" % "test",
   "com.typesafe.akka" %% "akka-http" % "10.5.0",
-  "com.typesafe.akka" %% "akka-actor-typed" % "2.6.0",
+  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
   "io.spray" %% "spray-json" % "1.3.6",
   "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.2",
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.9.1",

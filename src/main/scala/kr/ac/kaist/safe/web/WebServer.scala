@@ -38,6 +38,8 @@ import kr.ac.kaist.safe.web.domain._
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 import scala.util.{Failure, Success}
+import akka.stream.scaladsl.Framing
+import akka.util.ByteString
 
 object WebServer extends {
   var cmdActor: ActorRef = _
@@ -104,60 +106,77 @@ object WebServer extends {
         get {
           getFromDirectory(assetsPath)
         }
-      } ~ uploadedFile("upload") { case (metadata, file) =>
+      } ~ fileUpload("upload") { case (metadata, byteSource) =>
         parameter('uid) { uid =>
           // Read Content
-          val content = io.Source.fromFile(file).getLines.mkString("\n")
+          val contentF = byteSource
+            .map(_.utf8String)
+            .runFold("") { (acc, str) => acc.concat(str) }
 
-          // Parse
-          Parser.stringToAST(content) match {
+          onComplete(contentF) {
             case Failure(e) =>
               complete(
                 StatusCodes.BadRequest,
-                JsonUtil.toJson(FileUploadResp("error", "parse failed"))
+                JsonUtil.toJson(FileUploadResp("error", "read content failed"))
               )
-            case Success((pgm, _)) =>
-              val testSafeConfig: SafeConfig = SafeConfig(CmdBase, Nil)
-              val parser = new ArgParser(CmdBase, testSafeConfig)
-              val heapBuildConfig = HeapBuild.defaultConfig
-              val testJSON = CONFIG_FILE
-              parser.addRule(heapBuildConfig, HeapBuild.name, HeapBuild.options)
-              parser(List(s"-config=$testJSON"))
-
-              // AST
-              val (ast, _) = ASTRewrite.rewrite(pgm)
-              complete(ast.toString)
-
-              // Translate AST -> IR.
-              val translator = new Translator(ast)
-              val ir = translator.result
-
-              // Build CFG from IR.
-              val cbResult = new DefaultCFGBuilder(ir, null, null)
-              val cfg = cbResult.cfg
-
-              // HeapBuild
-              HeapBuild(cfg, null, heapBuildConfig) match {
+            case Success(content) =>
+              Parser.stringToAST(content) match {
                 case Failure(e) =>
                   complete(
                     StatusCodes.BadRequest,
-                    JsonUtil.toJson(
-                      FileUploadResp("error", "heap build failed")
-                    )
+                    JsonUtil.toJson(FileUploadResp("error", "parse failed"))
                   )
-                case Success(some) =>
-                  val (cfg, sem, initTP, heapConfig, iter) = some
+                case Success((pgm, _)) =>
+                  val testSafeConfig: SafeConfig = SafeConfig(CmdBase, Nil)
+                  val parser = new ArgParser(CmdBase, testSafeConfig)
+                  val heapBuildConfig = HeapBuild.defaultConfig
+                  val testJSON = CONFIG_FILE
+                  parser.addRule(
+                    heapBuildConfig,
+                    HeapBuild.name,
+                    HeapBuild.options
+                  )
+                  parser(List(s"-config=$testJSON"))
 
-                  // set the start time.
-                  val startTime = System.currentTimeMillis
-                  var iters: Int = 0
+                  // AST
+                  val (ast, _) = ASTRewrite.rewrite(pgm)
+                  complete(ast.toString)
 
-                  var interOpt: Option[Interactive] = None
-                  interOpt = Some(new WebConsole(cfg, sem, heapConfig, iter))
+                  // Translate AST -> IR.
+                  val translator = new Translator(ast)
+                  val ir = translator.result
 
-                  cmdActor ! UpdateFixpoint(uid, new Fixpoint(sem, interOpt))
+                  // Build CFG from IR.
+                  val cbResult = new DefaultCFGBuilder(ir, null, null)
+                  val cfg = cbResult.cfg
 
-                  complete(JsonUtil.toJson(FileUploadResp("complete")))
+                  // HeapBuild
+                  HeapBuild(cfg, null, heapBuildConfig) match {
+                    case Failure(e) =>
+                      complete(
+                        StatusCodes.BadRequest,
+                        JsonUtil.toJson(
+                          FileUploadResp("error", "heap build failed")
+                        )
+                      )
+                    case Success(some) =>
+                      val (cfg, sem, initTP, heapConfig, iter) = some
+
+                      // set the start time.
+                      val startTime = System.currentTimeMillis
+                      var iters: Int = 0
+
+                      var interOpt: Option[Interactive] = None
+                      interOpt =
+                        Some(new WebConsole(cfg, sem, heapConfig, iter))
+
+                      cmdActor ! UpdateFixpoint(
+                        uid,
+                        new Fixpoint(sem, interOpt)
+                      )
+
+                      complete(JsonUtil.toJson(FileUploadResp("complete")))
+                  }
               }
           }
         }
