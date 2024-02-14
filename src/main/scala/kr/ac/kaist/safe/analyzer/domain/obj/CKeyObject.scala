@@ -22,19 +22,19 @@ import kr.ac.kaist.safe.util._
 // object abstract domain with concrete keys
 ////////////////////////////////////////////////////////////////////////////////
 object CKeyObject extends ObjDomain {
-  val NMap = PMapDomain[String, DataProp, AbsDataProp.type](AbsDataProp)
+  val NMap: PMapDomain[String,DataProp,AbsDataProp.type] = PMapDomain[String, DataProp, AbsDataProp.type](AbsDataProp)
   type NMap = NMap.Elem
   val NVOpt: NMap.AbsVOpt.type = NMap.AbsVOpt
   type NVOpt = NVOpt.Elem
-  val IMap = PMapDomain[IName, IValue, AbsIValue.type](AbsIValue)
+  val IMap: PMapDomain[IName,IValue,AbsIValue.type] = PMapDomain[IName, IValue, AbsIValue.type](AbsIValue)
   type IMap = IMap.Elem
   val IVOpt: IMap.AbsVOpt.type = IMap.AbsVOpt
   type IVOpt = IVOpt.Elem
 
   // bottom / top / empty object
-  lazy val Bot = Elem(NMap.Bot, IMap.Bot)
-  lazy val Top = Elem(NMap.Top, IMap.Top)
-  lazy val Empty = Elem(NMap.Empty, IMap.Empty)
+  lazy val Bot: Elem = Elem(NMap.Bot, IMap.Bot)
+  lazy val Top: Elem = Elem(NMap.Top, IMap.Top)
+  lazy val Empty: Elem = Elem(NMap.Empty, IMap.Empty)
 
   // abstraction function
   def alpha(obj: Obj): Elem = Elem(

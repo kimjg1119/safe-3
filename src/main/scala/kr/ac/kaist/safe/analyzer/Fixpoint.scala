@@ -30,7 +30,7 @@ class Fixpoint(
       iters += 1
       computeOneStep
     }
-    consoleOpt.foreach(_.runFinished)
+    consoleOpt.foreach(_.runFinished())
 
     // calculate duration
     val duration = (System.nanoTime - startTime) / 1e9

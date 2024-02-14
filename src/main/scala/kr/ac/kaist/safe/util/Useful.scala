@@ -26,7 +26,7 @@ object Useful {
     var result: String = filename.replaceAll("\\\\", "/")
     val drive = result.charAt(0)
     if (Character.isUpperCase(drive))
-      result = Character.toLowerCase(drive) + result.substring(1)
+      result = "" + (Character.toLowerCase(drive)) + result.substring(1)
     result
   }
 

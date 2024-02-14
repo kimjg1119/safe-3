@@ -22,9 +22,9 @@ class Test262Rewriter(program: Program) extends ASTWalker {
   var count: Int = 0
   def makeId(info: ASTNodeInfo, name: String): Id = Id(info, name, Some(name), false)
   def resultName(): String = { count += 1; "__result" + count }
-  def resultId(info: ASTNodeInfo): Id = makeId(info, resultName)
+  def resultId(info: ASTNodeInfo): Id = makeId(info, resultName())
   def expectName(): String = "__expect" + count
-  def expectId(info: ASTNodeInfo): Id = makeId(info, expectName)
+  def expectId(info: ASTNodeInfo): Id = makeId(info, expectName())
   def errLoc(info: ASTNodeInfo, exn: String): VarRef = {
     val exnLoc =
       if (exn.equals("EvalError")) "__EvalErrLoc"

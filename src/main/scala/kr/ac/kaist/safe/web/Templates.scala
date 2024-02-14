@@ -20,6 +20,6 @@ object Templates {
   def getBaseTemplate: String = {
     // copy libraries
     val baseHtmlPath = new File(Useful.path("src", "main", "resources", "templates", "base.html"))
-    Source.fromFile(baseHtmlPath).getLines.mkString(LINE_SEP)
+    Source.fromFile(baseHtmlPath).getLines().mkString(LINE_SEP)
   }
 }

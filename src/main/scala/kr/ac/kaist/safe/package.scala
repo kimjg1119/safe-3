@@ -16,7 +16,7 @@ import kr.ac.kaist.safe.util.{ NodeUtil => NU }
 
 package object safe {
   // Line seperator
-  val LINE_SEP = System.getProperty("line.separator")
+  val LINE_SEP: String = System.getProperty("line.separator")
 
   // Path seperator
   val SEP = File.separator
@@ -28,16 +28,16 @@ package object safe {
   val MAX_INST_PRINT_SIZE = 10000
 
   // Base project directory root
-  val BASE_DIR = System.getenv("SAFE_HOME")
+  val BASE_DIR: String = System.getenv("SAFE_HOME")
 
   // Base project directory root
-  val CUR_DIR = System.getProperty("user.dir")
+  val CUR_DIR: String = System.getProperty("user.dir")
 
   // Configuration file
-  val CONFIG_FILE = BASE_DIR + SEP + "config.json"
+  val CONFIG_FILE: String = BASE_DIR + SEP + "config.json"
 
   // Predefined variables
-  val PRED_VARS = List(
+  val PRED_VARS: List[String] = List(
     // 4.2 Language Overview
     "Object",
     "Function",
@@ -67,7 +67,7 @@ package object safe {
   )
 
   // Predefined functions
-  val PRED_FUNS = List(
+  val PRED_FUNS: List[String] = List(
     // 15.1.2 Function Properties of the Global Object
     "eval",
     "parseInt",
@@ -82,10 +82,10 @@ package object safe {
   )
 
   // All predefined variables and functions
-  val PRED_ALL = PRED_VARS ++ PRED_FUNS
+  val PRED_ALL: List[String] = PRED_VARS ++ PRED_FUNS
 
   // Global names for DOM
-  val DOM_NAMES = List(
+  val DOM_NAMES: List[String] = List(
     "window",
     "document"
   )

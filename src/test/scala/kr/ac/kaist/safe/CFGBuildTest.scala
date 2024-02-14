@@ -73,10 +73,10 @@ class CFGBuildTest extends SafeTest {
 
   // test directory
   def resDir(phase: String): String = s"$resDir$phase$SEP"
-  lazy val jsToTest = changeExt("js", "test")
-  lazy val astRewriteResDir = resDir("astRewrite")
-  lazy val translateResDir = resDir("compile")
-  lazy val cfgBuildResDir = resDir("cfg")
+  lazy val jsToTest: String => String = changeExt("js", "test")
+  lazy val astRewriteResDir: String = resDir("astRewrite")
+  lazy val translateResDir: String = resDir("compile")
+  lazy val cfgBuildResDir: String = resDir("cfg")
 
   // registration
   for (file <- shuffle(walkTree(new File(jsDir)))) {

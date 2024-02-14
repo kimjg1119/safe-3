@@ -17,8 +17,8 @@ import kr.ac.kaist.safe.LINE_SEP
 
 // default lexical environment abstract domain
 object DefaultLexEnv extends LexEnvDomain {
-  lazy val Bot = Elem(AbsEnvRec.Bot, LocSet.Bot, AbsAbsent.Bot)
-  lazy val Top = Elem(AbsEnvRec.Top, LocSet.Top, AbsAbsent.Top)
+  lazy val Bot: Elem = Elem(AbsEnvRec.Bot, LocSet.Bot, AbsAbsent.Bot)
+  lazy val Top: Elem = Elem(AbsEnvRec.Top, LocSet.Top, AbsAbsent.Top)
 
   def alpha(env: LexEnv): Elem = env.outer match {
     case None => Elem(AbsEnvRec(env.record), LocSet.Bot, AbsAbsent.Top)

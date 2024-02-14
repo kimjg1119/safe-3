@@ -47,23 +47,23 @@ trait TracePartition {
 // trace partition parser
 trait TracePartitionParser extends CFGBlockParser {
   // no sensitivity
-  lazy val empty = "Empty" ^^^ EmptyTP
+  lazy val empty: Parser[EmptyTP.type] = "Empty" ^^^ EmptyTP
 
   // product sensitivity
-  def product(lparser: Parser[TracePartition], rparser: Parser[TracePartition]) = {
+  def product(lparser: Parser[TracePartition], rparser: Parser[TracePartition]): Parser[ProductTP] = {
     "(" ~> (lparser <~ "|") ~ rparser <~ ")" ^^ { case ltp ~ rtp => ProductTP(ltp, rtp) }
   }
 
   // k-CFA
-  lazy val cfa = (nat <~ "-CFA(") ~ repsep(getTypedCFGBlock[Call], ",") <~ ")" ^^ {
+  lazy val cfa: Parser[CallSiteContext] = (nat <~ "-CFA(") ~ repsep(getTypedCFGBlock[Call], ",") <~ ")" ^^ {
     case depth ~ calls => CallSiteContext(calls, depth)
   }
 
   // LSA
-  lazy val loopIter = getTypedCFGBlock[LoopHead] ~ ("(" ~> nat <~ ")") ^^ {
+  lazy val loopIter: Parser[LoopIter] = getTypedCFGBlock[LoopHead] ~ ("(" ~> nat <~ ")") ^^ {
     case head ~ iter => LoopIter(head, iter)
   }
-  lazy val lsa = ("LSA[i:" ~> nat <~ ",j:") ~ nat ~ ("](" ~> repsep(loopIter, ",") <~ ")") ^^ {
+  lazy val lsa: Parser[LoopContext] = ("LSA[i:" ~> nat <~ ",j:") ~ nat ~ ("](" ~> repsep(loopIter, ",") <~ ")") ^^ {
     case maxDepth ~ maxIter ~ iterList => LoopContext(iterList, maxIter, maxDepth)
   }
 
@@ -121,7 +121,7 @@ case class ProductSensitivity(
     lsens: Sensitivity,
     rsens: Sensitivity
 ) extends Sensitivity {
-  val initTP = ProductTP(lsens.initTP, rsens.initTP)
+  val initTP: ProductTP = ProductTP(lsens.initTP, rsens.initTP)
   def isInsensitive: Boolean = lsens.isInsensitive && rsens.isInsensitive
 }
 
@@ -156,7 +156,7 @@ case class CallSiteContext(callsiteList: List[Call], depth: Int) extends TracePa
 }
 
 case class CallSiteSensitivity(depth: Int) extends Sensitivity {
-  val initTP = CallSiteContext(Nil, depth)
+  val initTP: CallSiteContext = CallSiteContext(Nil, depth)
   def isInsensitive: Boolean = depth == 0
 }
 
@@ -246,6 +246,6 @@ case class LoopContext(
 }
 
 case class LoopSensitivity(maxIter: Int, maxDepth: Int) extends Sensitivity {
-  val initTP = LoopContext(Nil, maxIter, maxDepth)
+  val initTP: LoopContext = LoopContext(Nil, maxIter, maxDepth)
   def isInsensitive: Boolean = maxDepth == 0
 }

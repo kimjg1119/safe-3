@@ -88,7 +88,7 @@ object WebServer extends {
           msg // unpack incoming WS text messages
         }
         .via(handlerFlow(uid)) // route them through the chatFlow
-        .map { resp: Protocol.Message =>
+        .map { (resp: Protocol.Message) =>
           TextMessage.Strict(resp.toJson)
         } // pack outgoing messages into WS JSON messages
 

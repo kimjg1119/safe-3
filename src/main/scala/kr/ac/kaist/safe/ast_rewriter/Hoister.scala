@@ -59,9 +59,9 @@ class Hoister(program: Program) {
   // Get the declared variable and function names and the names on lhs of assignments
   // in the current lexical scope
   private class HoistWalker(node: ASTNode) extends ASTWalker {
-    var varDecls = List[VarDecl]()
-    var funDecls = List[FunDecl]()
-    var varNames = List[(Span, String)]()
+    var varDecls: List[VarDecl] = List[VarDecl]()
+    var funDecls: List[FunDecl] = List[FunDecl]()
+    var varNames: List[(Span, String)] = List[(Span, String)]()
     def doit(): (List[VarDecl], List[FunDecl], List[(Span, String)]) =
       { walk(node); (varDecls, funDecls, varNames) }
 
@@ -511,7 +511,7 @@ class Hoister(program: Program) {
     private def isVdInFd(vd: VarDecl, ds: List[FunDecl]): Boolean =
       ds.exists(d => fd2Str(d).equals(vd2Str(vd)))
     private def hoist(body: List[Stmt], params: List[Id], strict: Boolean): (List[FunDecl], List[VarDecl], List[Stmt]) = {
-      val (vdss, fdss, varss) = body.map(s => new HoistWalker(s).doit).unzip3
+      val (vdss, fdss, varss) = body.map(s => new HoistWalker(s).doit()).unzip3
       // hoisted variable declarations
       val vds = vdss.flatten
       // hoisted function declarations

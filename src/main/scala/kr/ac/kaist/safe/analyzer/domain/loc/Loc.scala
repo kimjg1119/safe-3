@@ -18,6 +18,7 @@ import kr.ac.kaist.safe.util.PipeOps._
 import kr.ac.kaist.safe.util._
 import scala.util.parsing.combinator._
 import scala.util.{ Try, Success, Failure }
+import scala.util.matching.Regex
 
 // concrete location type
 abstract class Loc extends Value {
@@ -45,10 +46,10 @@ object Loc {
 // location parser
 trait LocParser extends TracePartitionParser {
   // allocation site abstraction
-  lazy val userASite = "#" ~> nat ^^ { id => UserAllocSite(id) }
-  lazy val predName = "[0-9a-zA-Z-.<>\\[\\]]+".r
-  lazy val predASite = "#" ~> predName ^^ { name => PredAllocSite(name) }
-  lazy val allocSite = userASite | predASite
+  lazy val userASite: Parser[UserAllocSite] = "#" ~> nat ^^ { id => UserAllocSite(id) }
+  lazy val predName: Regex = "[0-9a-zA-Z-.<>\\[\\]]+".r
+  lazy val predASite: Parser[PredAllocSite] = "#" ~> predName ^^ { name => PredAllocSite(name) }
+  lazy val allocSite: Parser[AllocSite] = userASite | predASite
 
   // trace sensitive address abstraction
   def heapClone(parser: Parser[Loc]): Parser[Loc] = {
@@ -58,15 +59,15 @@ trait LocParser extends TracePartitionParser {
   }
 
   // recency
-  lazy val recent = "R" ^^^ Recent
-  lazy val old = "O" ^^^ Old
-  lazy val recencyTag = recent | old
+  lazy val recent: Parser[Recent.type] = "R" ^^^ Recent
+  lazy val old: Parser[Old.type] = "O" ^^^ Old
+  lazy val recencyTag: Parser[RecencyTag] = recent | old
   def recency(parser: Parser[Loc]): Parser[Loc] = recencyTag ~ parser ^^ {
     case tag ~ loc => Recency(loc, tag)
   }
 
   // abstract location
-  lazy val loc = allocSite |>
+  lazy val loc: Parser[Loc] = allocSite |>
     condApply(HeapClone, heapClone) |>
     condApply(RecencyMode, recency)
 

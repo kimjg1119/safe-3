@@ -21,7 +21,7 @@ import kr.ac.kaist.safe.errors.error.NoFileError
 // Parse phase
 case object Parse extends PhaseObj[Unit, ParseConfig, Program] {
   val name = "parser"
-  val help = "Parses files." + LINE_SEP +
+  val help: String = "Parses files." + LINE_SEP +
     "If multiple files are given, they are concatenated in the given order before being parsed."
 
   def apply(

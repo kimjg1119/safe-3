@@ -19,8 +19,8 @@ package object domain {
   ////////////////////////////////////////////////////////////////
   lazy val AT = AbsBool.True
   lazy val AF = AbsBool.False
-  val T = Bool(true)
-  val F = Bool(false)
+  val T: Bool = Bool(true)
+  val F: Bool = Bool(false)
 
   ////////////////////////////////////////////////////////////////
   // value constructors
@@ -35,7 +35,7 @@ package object domain {
   ////////////////////////////////////////////////////////////////
   val STR_DEFAULT_OTHER = "@default_other"
   val STR_DEFAULT_NUMBER = "@default_number"
-  val DEFAULT_KEYSET = Set(STR_DEFAULT_NUMBER, STR_DEFAULT_OTHER)
+  val DEFAULT_KEYSET: Set[String] = Set(STR_DEFAULT_NUMBER, STR_DEFAULT_OTHER)
 
   ////////////////////////////////////////////////////////////////
   // string value helper functions

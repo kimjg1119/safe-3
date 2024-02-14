@@ -12,11 +12,12 @@
 package kr.ac.kaist.safe.util
 
 import scala.util.parsing.combinator._
+import scala.util.matching.Regex
 
 trait SimpleParser extends RegexParsers {
-  lazy val any = ".+".r
-  lazy val nat = "[0-9]+".r ^^ { n => n.toInt }
-  lazy val num = "-?[0-9]+".r ^^ { n => n.toInt }
-  lazy val alpha = "[a-zA-Z]+".r
-  lazy val alphaNum = "[0-9a-zA-Z]+".r
+  lazy val any: Regex = ".+".r
+  lazy val nat: Parser[Int] = "[0-9]+".r ^^ { n => n.toInt }
+  lazy val num: Parser[Int] = "-?[0-9]+".r ^^ { n => n.toInt }
+  lazy val alpha: Regex = "[a-zA-Z]+".r
+  lazy val alphaNum: Regex = "[0-9a-zA-Z]+".r
 }

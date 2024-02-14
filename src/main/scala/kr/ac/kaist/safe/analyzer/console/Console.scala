@@ -73,7 +73,7 @@ class Console(
       }
       setPrompt()
       while ({
-        println
+        println()
         val line = reader.readLine(prompt)
         startTime = System.currentTimeMillis
         beforeTime = System.currentTimeMillis
@@ -130,10 +130,10 @@ class Console(
           }.mkString + s"select call context index > "
         )
         while ({
-          println
+          println()
           reader.readLine match {
             case null =>
-              println
+              println()
               println("* current control point not changed.")
               false
             case "" => true

@@ -19,7 +19,7 @@ case class SourceLoc(
     column: Int = 0,
     offset: Int = 0
 ) {
-  override def toString: String = line + ":" + column
+  override def toString: String = "" + line + ":" + column
 
   def addLines(l: Int, o: Int): SourceLoc =
     SourceLoc(line + l, column, offset + o)

@@ -424,7 +424,7 @@ class Disambiguator(program: Program) {
       case _: DoWhile =>
         val oldEnv = (env, labEnv)
         val oldInIterator = inIterator
-        mkInIterator
+        mkInIterator()
         val result = super.walk(node)
         inIterator = oldInIterator
         setEnv(oldEnv)
@@ -433,7 +433,7 @@ class Disambiguator(program: Program) {
       case _: For =>
         val oldEnv = (env, labEnv)
         val oldInIterator = inIterator
-        mkInIterator
+        mkInIterator()
         val result = super.walk(node)
         inIterator = oldInIterator
         val newEnv = env
@@ -445,7 +445,7 @@ class Disambiguator(program: Program) {
         val oldEnv = (env, labEnv)
         hasAssign = true
         val oldInIterator = inIterator
-        mkInIterator
+        mkInIterator()
         val result = super.walk(node)
         inIterator = oldInIterator
         val newEnv = env
@@ -490,7 +490,7 @@ class Disambiguator(program: Program) {
       case _: Switch =>
         val oldEnv = (env, labEnv)
         val oldInSwitch = inSwitch
-        mkInSwitch
+        mkInSwitch()
         val result = super.walk(node)
         inSwitch = oldInSwitch
         setEnv(oldEnv)
@@ -503,7 +503,7 @@ class Disambiguator(program: Program) {
       case _: While =>
         val oldEnv = (env, labEnv)
         val oldInIterator = inIterator
-        mkInIterator
+        mkInIterator()
         val result = super.walk(node)
         inIterator = oldInIterator
         setEnv(oldEnv)

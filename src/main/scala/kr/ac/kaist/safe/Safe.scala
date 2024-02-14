@@ -80,7 +80,7 @@ object Safe {
     CmdHelp,
     CmdWeb
   )
-  val cmdMap = commands.foldLeft[Map[String, Command]](Map()) {
+  val cmdMap: Map[String,Command] = commands.foldLeft[Map[String, Command]](Map()) {
     case (map, cmd) => map + (cmd.name -> cmd)
   }
 

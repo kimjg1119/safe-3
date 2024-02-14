@@ -15,7 +15,7 @@ import kr.ac.kaist.safe.LINE_SEP
 case class PMapDomain[K, V, VD <: AbsDomain[V]](
     AbsV: VD
 ) extends AbsDomain[Map[K, V]] {
-  val AbsVOpt = OptionDomain[V, AbsV.type](AbsV)
+  val AbsVOpt: OptionDomain[V,AbsV.type] = OptionDomain[V, AbsV.type](AbsV)
   type AbsV = AbsV.Elem
   type AbsVOpt = AbsVOpt.Elem
 

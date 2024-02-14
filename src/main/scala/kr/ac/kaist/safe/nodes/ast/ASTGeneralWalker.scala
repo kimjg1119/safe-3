@@ -20,7 +20,7 @@ trait ASTGeneralWalker[Result] {
   }
 
   def walkOpt(opt: Option[ASTNode]): List[Result] =
-    opt.fold(List[Result]()) { n: ASTNode =>
+    opt.fold(List[Result]()) { (n: ASTNode) =>
       List(n match {
         case s: Stmt => walk(s)
         case e: Expr => walk(e)

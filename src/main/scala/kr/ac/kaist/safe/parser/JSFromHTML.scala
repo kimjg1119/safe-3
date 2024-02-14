@@ -24,13 +24,14 @@ import scala.util.Try
 import kr.ac.kaist.safe.errors.ExcLog
 import kr.ac.kaist.safe.nodes.ast.Stmts
 import kr.ac.kaist.safe.util.NodeUtil._
+import scala.util.matching.Regex
 
 object JSFromHTML {
   private def toList[T](jList: JList[T]): List[T] = jList.asScala.toList
   // extract a JavaScript file name from a string such as "main.js?135895164373817"
-  val fileNameRegexp =
+  val fileNameRegexp: Regex =
     (".*/[^/\\:*?\"<>|]+").r // \ : * ? " < > | // file:///c:/~/~/main.js?121424324
-  val bogus = (1, 1)
+  val bogus: (Int, Int) = (1, 1)
   implicit val codec: scala.io.Codec = Codec("UTF-8")
   codec.onMalformedInput(CodingErrorAction.REPLACE)
   codec.onUnmappableCharacter(CodingErrorAction.REPLACE)

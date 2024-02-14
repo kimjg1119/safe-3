@@ -17,6 +17,6 @@ import org.scalatest._
 
 class BenchAnalyzeTest extends AnalyzeTest {
   // registration
-  val benchTestDir = testDir + "benchmarks"
+  val benchTestDir: String = testDir + "benchmarks"
   analyzeHelper("BenchAnalyze", List(benchTestDir))
 }

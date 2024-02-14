@@ -27,7 +27,7 @@ import scala.util.control.Breaks._
 case class State(subscriber: ActorRef, var fixpoint: Fixpoint = null)
 
 class CmdActor() extends Actor {
-  var states = mutable.Map.empty[String, State]
+  var states: mutable.Map[String,State] = mutable.Map.empty[String, State]
 
   def dispatch(uid: String, msg: Message): Unit = {
     states(uid).subscriber ! msg
@@ -135,7 +135,7 @@ class CmdActor() extends Actor {
           case i: CFGCallInst => c.sem.CI(cp, i, st, excSt)
         }
         st = s; excSt = e
-        if (inst.id == instId.toInt) break
+        if (inst.id == instId.toInt) break()
       }
     }
 

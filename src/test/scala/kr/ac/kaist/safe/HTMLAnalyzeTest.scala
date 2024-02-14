@@ -17,6 +17,6 @@ import org.scalatest._
 
 class HTMLAnalyzeTest extends AnalyzeTest {
   // registration
-  val htmlTestDir = testDir + "html"
+  val htmlTestDir: String = testDir + "html"
   analyzeHelper("HTMLAnalyze", List(htmlTestDir))
 }

@@ -107,14 +107,14 @@ trait ModelParser extends JavaTokenParsers with RegexParsers {
     }
 
   // JavaScript internal property
-  val jsIPrototype = "[[Prototype]]" ^^^ { IPrototype }
-  val jsIClass = "[[Class]]" ^^^ { IClass }
-  val jsIExtensible = "[[Extensible]]" ^^^ { IExtensible }
-  val jsIPrimitiveValue = "[[PrimitiveValue]]" ^^^ { IPrimitiveValue }
-  val jsICall = "[[Call]]" ^^^ { ICall }
-  val jsIConstruct = "[[Construct]]" ^^^ { IConstruct }
-  val jsIScope = "[[Scope]]" ^^^ { IScope }
-  val jsIHasInstance = "[[HasInstance]]" ^^^ { IHasInstance }
+  val jsIPrototype: Parser[IPrototype.type] = "[[Prototype]]" ^^^ { IPrototype }
+  val jsIClass: Parser[IClass.type] = "[[Class]]" ^^^ { IClass }
+  val jsIExtensible: Parser[IExtensible.type] = "[[Extensible]]" ^^^ { IExtensible }
+  val jsIPrimitiveValue: Parser[IPrimitiveValue.type] = "[[PrimitiveValue]]" ^^^ { IPrimitiveValue }
+  val jsICall: Parser[ICall.type] = "[[Call]]" ^^^ { ICall }
+  val jsIConstruct: Parser[IConstruct.type] = "[[Construct]]" ^^^ { IConstruct }
+  val jsIScope: Parser[IScope.type] = "[[Scope]]" ^^^ { IScope }
+  val jsIHasInstance: Parser[IHasInstance.type] = "[[HasInstance]]" ^^^ { IHasInstance }
   val jsIName: Parser[IName] = {
     jsIPrototype | jsIClass | jsIExtensible | jsIPrimitiveValue |
       jsICall | jsIConstruct | jsIScope | jsIHasInstance
@@ -125,8 +125,8 @@ trait ModelParser extends JavaTokenParsers with RegexParsers {
   // JavaScript object
   type PMap = Map[String, DataProp]
   type IMap = Map[IName, IValue]
-  val jsMember = (str <~ ":") ~ jsDataProp ^^ { case n ~ d => (n, d) }
-  val jsIMember = (jsIName <~ ":") ~ jsIValue ^^ { case n ~ v => (n, v) }
+  val jsMember: Parser[(String, DataProp)] = (str <~ ":") ~ jsDataProp ^^ { case n ~ d => (n, d) }
+  val jsIMember: Parser[(IName, IValue)] = (jsIName <~ ":") ~ jsIValue ^^ { case n ~ v => (n, v) }
   val jsObjMapTuple: Parser[(PMap, IMap)] = repsep(jsMember | jsIMember, ",") ^^ {
     case lst => ((Map[String, DataProp](), Map[IName, IValue]()) /: lst) {
       case ((pmap, imap), kv) => kv match {

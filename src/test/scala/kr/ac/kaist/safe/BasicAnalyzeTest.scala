@@ -17,7 +17,7 @@ import org.scalatest._
 
 class BasicAnalyzeTest extends AnalyzeTest {
   // registration
-  val analyzerTestDir = testDir + "semantics"
+  val analyzerTestDir: String = testDir + "semantics"
   analyzeHelper("BasicAnalyze", List(
     analyzerTestDir + SEP + "language",
     analyzerTestDir + SEP + "builtin"

@@ -18,7 +18,7 @@ trait IRGeneralWalker[Result] {
   def join(args: Result*): Result
 
   def walkOpt(opt: Option[IRNode]): List[Result] =
-    opt.fold(List[Result]()) { n: IRNode =>
+    opt.fold(List[Result]()) { (n: IRNode) =>
       List(n match {
         case s: IRStmt => walk(s)
         case i: IRId => walk(i)

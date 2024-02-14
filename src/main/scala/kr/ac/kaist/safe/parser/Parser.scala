@@ -140,7 +140,7 @@ object Parser {
     var fileName = new File(f).getCanonicalPath
     if (File.separatorChar == '\\') {
       // convert path string to linux style for windows
-      fileName = fileName.charAt(0).toLower + fileName.replace('\\', '/').substring(1)
+      fileName = "" + fileName.charAt(0).toLower + fileName.replace('\\', '/').substring(1)
     }
     FileKind(fileName) match {
       case JSFile | JSErrFile => {

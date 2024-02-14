@@ -32,18 +32,18 @@ object NodeUtil {
   val GLOBAL_PREFIX = "<>Global<>"
   val GENERATED_STR = "<>generated String Literal"
 
-  val VAR_TRUE = freshGlobalName("true")
-  val VAR_ONE = freshGlobalName("one")
-  val IGNORE_NAME = freshGlobalName("ignore")
-  val GLOBAL_NAME = freshGlobalName("global")
-  val REF_ERR_NAME = freshGlobalName("referenceError")
+  val VAR_TRUE: String = freshGlobalName("true")
+  val VAR_ONE: String = freshGlobalName("one")
+  val IGNORE_NAME: String = freshGlobalName("ignore")
+  val GLOBAL_NAME: String = freshGlobalName("global")
+  val REF_ERR_NAME: String = freshGlobalName("referenceError")
 
-  val MERGED_FILE_NAME = freshFile("Merged")
-  val MERGED_SPAN = Span(MERGED_FILE_NAME)
+  val MERGED_FILE_NAME: String = freshFile("Merged")
+  val MERGED_SPAN: Span = Span(MERGED_FILE_NAME)
   val MERGED_SOURCE_INFO = new ASTNodeInfo(MERGED_SPAN)
 
-  val TEMP_AST = NoOp(ASTNodeInfo(Span()), "defaultAST")
-  val TEMP_IR = IRNoOp(TEMP_AST, "defaultIR")
+  val TEMP_AST: NoOp = NoOp(ASTNodeInfo(Span()), "defaultAST")
+  val TEMP_IR: IRNoOp = IRNoOp(TEMP_AST, "defaultIR")
 
   val PRINT_WIDTH = 50
 
@@ -53,116 +53,116 @@ object NodeUtil {
 
   // internal API call
   // Helpers
-  val INTERNAL_PRINT = internalAPIName("Print")
-  val INTERNAL_NOT_YET_IMPLEMENTED = internalAPIName("NotYetImplemented")
-  val INTERNAL_CHAR_CODE = internalAPIName("CharCode")
+  val INTERNAL_PRINT: String = internalAPIName("Print")
+  val INTERNAL_NOT_YET_IMPLEMENTED: String = internalAPIName("NotYetImplemented")
+  val INTERNAL_CHAR_CODE: String = internalAPIName("CharCode")
   // 8.6.2 Object Internal Properties and Methods
-  val INTERNAL_CLASS = internalAPIName("Class")
-  val INTERNAL_PRIM_VAL = internalAPIName("PrimitiveValue")
-  val INTERNAL_PROTO = internalAPIName("Prototype")
-  val INTERNAL_EXTENSIBLE = internalAPIName("Extensible")
-  val INTERNAL_CALL = internalAPIName("Call")
-  val INTERNAL_CONSTRUCT = internalAPIName("Construct")
+  val INTERNAL_CLASS: String = internalAPIName("Class")
+  val INTERNAL_PRIM_VAL: String = internalAPIName("PrimitiveValue")
+  val INTERNAL_PROTO: String = internalAPIName("Prototype")
+  val INTERNAL_EXTENSIBLE: String = internalAPIName("Extensible")
+  val INTERNAL_CALL: String = internalAPIName("Call")
+  val INTERNAL_CONSTRUCT: String = internalAPIName("Construct")
   // 8.7 The Reference Specification Type
-  val INTERNAL_GET_BASE = internalAPIName("GetBase")
+  val INTERNAL_GET_BASE: String = internalAPIName("GetBase")
   // 8.12.1 [[GetOwnProperty]] (P)
-  val INTERNAL_GET_OWN_PROP = internalAPIName("GetOwnProperty")
+  val INTERNAL_GET_OWN_PROP: String = internalAPIName("GetOwnProperty")
   // 8.12.9 [[DefineOwnProperty]] (P, Desc, Throw)
-  val INTERNAL_DEF_OWN_PROP = internalAPIName("DefineOwnProperty")
+  val INTERNAL_DEF_OWN_PROP: String = internalAPIName("DefineOwnProperty")
   // 9.1 ToPrimitive
-  val INTERNAL_TO_PRIM = internalAPIName("ToPrimitive")
+  val INTERNAL_TO_PRIM: String = internalAPIName("ToPrimitive")
   // 9.2 ToBoolean
-  val INTERNAL_TO_BOOL = internalAPIName("ToBoolean")
+  val INTERNAL_TO_BOOL: String = internalAPIName("ToBoolean")
   // 9.3 ToNumber
-  val INTERNAL_TO_NUM = internalAPIName("ToNumber")
+  val INTERNAL_TO_NUM: String = internalAPIName("ToNumber")
   // 9.4 ToInteger
-  val INTERNAL_TO_INT = internalAPIName("ToInteger")
+  val INTERNAL_TO_INT: String = internalAPIName("ToInteger")
   // 9.6 ToUint32: (Unsigned 32 Bit Integer)
-  val INTERNAL_TO_UINT_32 = internalAPIName("ToUint32")
+  val INTERNAL_TO_UINT_32: String = internalAPIName("ToUint32")
   // 9.7 ToUint16: (Unsigned 16 Bit Integer)
-  val INTERNAL_TO_UINT_16 = internalAPIName("ToUint16")
+  val INTERNAL_TO_UINT_16: String = internalAPIName("ToUint16")
   // 9.8 ToString
-  val INTERNAL_TO_STR = internalAPIName("ToString")
+  val INTERNAL_TO_STR: String = internalAPIName("ToString")
   // 9.9 ToObject
-  val INTERNAL_TO_OBJ = internalAPIName("ToObject")
+  val INTERNAL_TO_OBJ: String = internalAPIName("ToObject")
   // 9.11 IsCallable
-  val INTERNAL_IS_CALLABLE = internalAPIName("IsCallable")
+  val INTERNAL_IS_CALLABLE: String = internalAPIName("IsCallable")
   // 9.12 The SameValue Algorithm
-  val INTERNAL_SAME_VALUE = internalAPIName("SameValue")
+  val INTERNAL_SAME_VALUE: String = internalAPIName("SameValue")
   // 15.2.3.4 Object.getOwnPropertyNames ( O )
-  val INTERNAL_GET_OWN_PROP_NAMES = internalAPIName("getOwnPropertyNames")
+  val INTERNAL_GET_OWN_PROP_NAMES: String = internalAPIName("getOwnPropertyNames")
   // 15.3.4.5 Function.prototype.bind
-  val INTERNAL_TARGET_FUN = internalAPIName("TargetFunction")
+  val INTERNAL_TARGET_FUN: String = internalAPIName("TargetFunction")
   // 15.3.4.5 [[BoundThis]]
-  val INTERNAL_BOUND_THIS = internalAPIName("BoundThis")
+  val INTERNAL_BOUND_THIS: String = internalAPIName("BoundThis")
   // 15.3.4.5 [[BoundArgs]]
-  val INTERNAL_BOUND_ARGS = internalAPIName("BoundArgs")
+  val INTERNAL_BOUND_ARGS: String = internalAPIName("BoundArgs")
   // 15.5.2.1 new String (value)
-  val INTERNAL_STR_OBJ = internalAPIName("StrObj")
+  val INTERNAL_STR_OBJ: String = internalAPIName("StrObj")
   // 15.5.4.7 String.prototype.indexOf (searchString, position)
-  val INTERNAL_INDEX_OF = internalAPIName("indexOf")
+  val INTERNAL_INDEX_OF: String = internalAPIName("indexOf")
   // 15.5.4.8 String.prototype.lastIndexOf (searchString, position)
-  val INTERNAL_LAST_INDEX_OF = internalAPIName("lastIndexOf")
+  val INTERNAL_LAST_INDEX_OF: String = internalAPIName("lastIndexOf")
   // 15.5.4.14 String.prototype.split (separator, limit)
-  val INTERNAL_SPLIT = internalAPIName("split")
+  val INTERNAL_SPLIT: String = internalAPIName("split")
   // 15.5.4.15 String.prototype.substring (start, end)
-  val INTERNAL_SUBSTRING = internalAPIName("substring")
+  val INTERNAL_SUBSTRING: String = internalAPIName("substring")
   // 15.5.4.16 String.prototype.toLowerCase ( )
-  val INTERNAL_TO_LOWER_CASE = internalAPIName("toLowerCase")
+  val INTERNAL_TO_LOWER_CASE: String = internalAPIName("toLowerCase")
   // 15.5.4.19 String.prototype.toUpperCase ( )
-  val INTERNAL_TO_UPPER_CASE = internalAPIName("toUpperCase")
+  val INTERNAL_TO_UPPER_CASE: String = internalAPIName("toUpperCase")
   // 15.5.4.20 String.prototype.trim ( )
-  val INTERNAL_TRIM = internalAPIName("trim")
+  val INTERNAL_TRIM: String = internalAPIName("trim")
   // 15.6.2.1 new Boolean (value)
-  val INTERNAL_BOOL_OBJ = internalAPIName("BoolObj")
+  val INTERNAL_BOOL_OBJ: String = internalAPIName("BoolObj")
   // 15.7.2.1 new Number (value)
-  val INTERNAL_NUM_OBJ = internalAPIName("NumObj")
+  val INTERNAL_NUM_OBJ: String = internalAPIName("NumObj")
   // 15.8.2.1 abs (x)
-  val INTERNAL_ABS = internalAPIName("abs")
+  val INTERNAL_ABS: String = internalAPIName("abs")
   // 15.8.2.2 acos (x)
-  val INTERNAL_ACOS = internalAPIName("acos")
+  val INTERNAL_ACOS: String = internalAPIName("acos")
   // 15.8.2.3 asin (x)
-  val INTERNAL_ASIN = internalAPIName("asin")
+  val INTERNAL_ASIN: String = internalAPIName("asin")
   // 15.8.2.4 atan (x)
-  val INTERNAL_ATAN = internalAPIName("atan")
+  val INTERNAL_ATAN: String = internalAPIName("atan")
   // 15.8.2.5 atan2 (y, x)
-  val INTERNAL_ATAN_TWO = internalAPIName("atan2")
+  val INTERNAL_ATAN_TWO: String = internalAPIName("atan2")
   // 15.8.2.6 ceil (x)
-  val INTERNAL_CEIL = internalAPIName("ceil")
+  val INTERNAL_CEIL: String = internalAPIName("ceil")
   // 15.8.2.7 cos (x)
-  val INTERNAL_COS = internalAPIName("cos")
+  val INTERNAL_COS: String = internalAPIName("cos")
   // 15.8.2.8 exp (x)
-  val INTERNAL_EXP = internalAPIName("exp")
+  val INTERNAL_EXP: String = internalAPIName("exp")
   // 15.8.2.9 floor (x)
-  val INTERNAL_FLOOR = internalAPIName("floor")
+  val INTERNAL_FLOOR: String = internalAPIName("floor")
   // 15.8.2.10 log (x)
-  val INTERNAL_LOG = internalAPIName("log")
+  val INTERNAL_LOG: String = internalAPIName("log")
   // 15.8.2.11 max ( [ value1 [ , value2 [ , ... ] ] ] )
-  val INTERNAL_MAX = internalAPIName("max")
-  val INTERNAL_MAX2 = internalAPIName("max2")
+  val INTERNAL_MAX: String = internalAPIName("max")
+  val INTERNAL_MAX2: String = internalAPIName("max2")
   // 15.8.2.12 min ( [ value1 [ , value2 [ , ... ] ] ] )
-  val INTERNAL_MIN = internalAPIName("min")
-  val INTERNAL_MIN2 = internalAPIName("min2")
+  val INTERNAL_MIN: String = internalAPIName("min")
+  val INTERNAL_MIN2: String = internalAPIName("min2")
   // 15.8.2.13 pow (x, y)
-  val INTERNAL_POW = internalAPIName("pow")
+  val INTERNAL_POW: String = internalAPIName("pow")
   // 15.8.2.15 round (x)
-  val INTERNAL_ROUND = internalAPIName("round")
+  val INTERNAL_ROUND: String = internalAPIName("round")
   // 15.8.2.16 sin (x)
-  val INTERNAL_SIN = internalAPIName("sin")
+  val INTERNAL_SIN: String = internalAPIName("sin")
   // 15.8.2.17 sqrt (x)
-  val INTERNAL_SQRT = internalAPIName("sqrt")
+  val INTERNAL_SQRT: String = internalAPIName("sqrt")
   // 15.8.2.18 tan (x)
-  val INTERNAL_TAN = internalAPIName("tan")
+  val INTERNAL_TAN: String = internalAPIName("tan")
   // 15.10.6.3 RegExp.prototype.test(string)
-  val INTERNAL_REGEX_TEST = internalAPIName("regexTest")
+  val INTERNAL_REGEX_TEST: String = internalAPIName("regexTest")
   // Other helpers
-  val INTERNAL_IS_OBJ = internalAPIName("isObject")
-  val INTERNAL_ITER_INIT = internalAPIName("iteratorInit")
-  val INTERNAL_ITER_HAS_NEXT = internalAPIName("iteratorHasNext")
-  val INTERNAL_ITER_NEXT = internalAPIName("iteratorNext")
-  val INTERNAL_ADD_EVENT_FUNC = internalAPIName("addEventFunc")
-  val INTERNAL_GET_LOC = internalAPIName("getLoc")
-  val INTERNAL_HAS_CONST = internalAPIName("HasConstruct")
+  val INTERNAL_IS_OBJ: String = internalAPIName("isObject")
+  val INTERNAL_ITER_INIT: String = internalAPIName("iteratorInit")
+  val INTERNAL_ITER_HAS_NEXT: String = internalAPIName("iteratorHasNext")
+  val INTERNAL_ITER_NEXT: String = internalAPIName("iteratorNext")
+  val INTERNAL_ADD_EVENT_FUNC: String = internalAPIName("addEventFunc")
+  val INTERNAL_GET_LOC: String = internalAPIName("getLoc")
+  val INTERNAL_HAS_CONST: String = internalAPIName("HasConstruct")
   val internalCallSet: Set[String] = Set(
     INTERNAL_PRINT,
     INTERNAL_NOT_YET_IMPLEMENTED,
@@ -231,29 +231,29 @@ object NodeUtil {
   def isInternalCall(id: String): Boolean = internalCallSet.contains(id)
 
   // internal API value
-  val INTERNAL_TOP = internalAPIName("Top")
-  val INTERNAL_BOT = internalAPIName("Bot")
-  val INTERNAL_UINT = internalAPIName("UInt")
-  val INTERNAL_NUINT = internalAPIName("NUInt")
-  val INTERNAL_GLOBAL = internalAPIName("Global")
-  val INTERNAL_BOOL_TOP = internalAPIName("BoolTop")
-  val INTERNAL_NUM_TOP = internalAPIName("NumTop")
-  val INTERNAL_STR_TOP = internalAPIName("StrTop")
-  val INTERNAL_EVAL_ERR = internalAPIName("EvalErr")
-  val INTERNAL_RANGE_ERR = internalAPIName("RangeErr")
-  val INTERNAL_REF_ERR = internalAPIName("RefErr")
-  val INTERNAL_SYNTAX_ERR = internalAPIName("SyntaxErr")
-  val INTERNAL_TYPE_ERR = internalAPIName("TypeErr")
-  val INTERNAL_URI_ERR = internalAPIName("URIErr")
-  val INTERNAL_EVAL_ERR_PROTO = internalAPIName("EvalErrProto")
-  val INTERNAL_RANGE_ERR_PROTO = internalAPIName("RangeErrProto")
-  val INTERNAL_REF_ERR_PROTO = internalAPIName("RefErrProto")
-  val INTERNAL_SYNTAX_ERR_PROTO = internalAPIName("SyntaxErrProto")
-  val INTERNAL_TYPE_ERR_PROTO = internalAPIName("TypeErrProto")
-  val INTERNAL_URI_ERR_PROTO = internalAPIName("URIErrProto")
-  val INTERNAL_ERR_PROTO = internalAPIName("ErrProto")
-  val INTERNAL_OBJ_CONST = internalAPIName("ObjConst")
-  val INTERNAL_ARRAY_CONST = internalAPIName("ArrayConst")
+  val INTERNAL_TOP: String = internalAPIName("Top")
+  val INTERNAL_BOT: String = internalAPIName("Bot")
+  val INTERNAL_UINT: String = internalAPIName("UInt")
+  val INTERNAL_NUINT: String = internalAPIName("NUInt")
+  val INTERNAL_GLOBAL: String = internalAPIName("Global")
+  val INTERNAL_BOOL_TOP: String = internalAPIName("BoolTop")
+  val INTERNAL_NUM_TOP: String = internalAPIName("NumTop")
+  val INTERNAL_STR_TOP: String = internalAPIName("StrTop")
+  val INTERNAL_EVAL_ERR: String = internalAPIName("EvalErr")
+  val INTERNAL_RANGE_ERR: String = internalAPIName("RangeErr")
+  val INTERNAL_REF_ERR: String = internalAPIName("RefErr")
+  val INTERNAL_SYNTAX_ERR: String = internalAPIName("SyntaxErr")
+  val INTERNAL_TYPE_ERR: String = internalAPIName("TypeErr")
+  val INTERNAL_URI_ERR: String = internalAPIName("URIErr")
+  val INTERNAL_EVAL_ERR_PROTO: String = internalAPIName("EvalErrProto")
+  val INTERNAL_RANGE_ERR_PROTO: String = internalAPIName("RangeErrProto")
+  val INTERNAL_REF_ERR_PROTO: String = internalAPIName("RefErrProto")
+  val INTERNAL_SYNTAX_ERR_PROTO: String = internalAPIName("SyntaxErrProto")
+  val INTERNAL_TYPE_ERR_PROTO: String = internalAPIName("TypeErrProto")
+  val INTERNAL_URI_ERR_PROTO: String = internalAPIName("URIErrProto")
+  val INTERNAL_ERR_PROTO: String = internalAPIName("ErrProto")
+  val INTERNAL_OBJ_CONST: String = internalAPIName("ObjConst")
+  val INTERNAL_ARRAY_CONST: String = internalAPIName("ArrayConst")
   val internalValueSet: Set[String] = Set(
     INTERNAL_TOP,
     INTERNAL_BOT,
@@ -282,7 +282,7 @@ object NodeUtil {
   def isInternalValue(id: String): Boolean = internalValueSet.contains(id)
 
   // internal API variable
-  val INTERNAL_EVENT_FUNC = internalAPIName("EventFunc")
+  val INTERNAL_EVENT_FUNC: String = internalAPIName("EventFunc")
   val internalVarSet: Set[String] = Set(
     INTERNAL_EVENT_FUNC
   )
@@ -297,7 +297,7 @@ object NodeUtil {
 
   // For modeling in JavaScript
   val jsModelsName = "jsModels"
-  val jsModelsBase =
+  val jsModelsBase: String =
     BASE_DIR + "/src/main/resources/" + jsModelsName + "/built_in/"
 
   def isModeled(node: ASTNode): Boolean =
@@ -637,7 +637,7 @@ object NodeUtil {
       } else (node, node.info.span)
     }
 
-    var map = Map.empty[String, Span]
+    var map: Map[String,Span] = Map.empty[String, Span]
     override def walk(i: ASTNodeInfo): ASTNodeInfo = {
       val span = i.span
       val key = span.toString
@@ -712,7 +712,7 @@ object NodeUtil {
       map = Map.empty[String, Span]
       walk(node)
     }
-    var map = Map[String, Span]()
+    var map: Map[String,Span] = Map[String, Span]()
 
     def walk(e: FunExpr): FunExpr =
       FunExpr(walk(e.info), walk(e.ftn))
@@ -857,7 +857,7 @@ object NodeUtil {
   object SimplifyIRWalker extends IRWalker {
     override def walk(node: IRRoot): IRRoot = node match {
       case IRRoot(ast, fds, vds, irs) =>
-        IRRoot(ast, fds.map { fd: IRFunDecl => walk(fd) }, vds, simplify(irs))
+        IRRoot(ast, fds.map { (fd: IRFunDecl) => walk(fd) }, vds, simplify(irs))
     }
 
     override def walk(node: IRFunctional): IRFunctional = node match {
@@ -868,7 +868,7 @@ object NodeUtil {
           n,
           params,
           simplify(args),
-          fds.map { fd: IRFunDecl => walk(fd) },
+          fds.map { (fd: IRFunDecl) => walk(fd) },
           vds,
           simplify(body)
         )

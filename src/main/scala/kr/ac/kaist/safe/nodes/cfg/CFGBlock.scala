@@ -104,11 +104,11 @@ trait CFGBlockParser extends SimpleParser {
 
   // block
   lazy val fid = num
-  lazy val entry = "entry" ^^^ -1
-  lazy val exit = "exit" ^^^ -2
-  lazy val exitExc = "exit-exc" ^^^ -3
-  lazy val bid = nat | entry | exit | exitExc
-  lazy val block = (fid <~ ":") ~ bid ^^ { case f ~ b => cfg.getBlock(f, b) }
+  lazy val entry: Parser[Int] = "entry" ^^^ -1
+  lazy val exit: Parser[Int] = "exit" ^^^ -2
+  lazy val exitExc: Parser[Int] = "exit-exc" ^^^ -3
+  lazy val bid: Parser[Int] = nat | entry | exit | exitExc
+  lazy val block: Parser[Option[CFGBlock]] = (fid <~ ":") ~ bid ^^ { case f ~ b => cfg.getBlock(f, b) }
 
   // get typed CFGBlock
   def getTypedCFGBlock[T](implicit tag: ClassTag[T]): Parser[T] =

@@ -21,17 +21,18 @@ import kr.ac.kaist.safe.nodes.cfg._
 import kr.ac.kaist.safe.util.{ NodeUtil, EJSNumber, EJSString, EJSBool, EJSNull, EJSUndef, AllocSite, Recency, Recent, Old }
 import kr.ac.kaist.safe.LINE_SEP
 import scala.collection.mutable.{ Map => MMap }
+import javax.script.ScriptEngine
 
 case class Semantics(
     cfg: CFG,
     worklist: Worklist
 ) {
-  lazy val engine = new ScriptEngineManager().getEngineByMimeType("text/javascript")
+  lazy val engine: ScriptEngine = new ScriptEngineManager().getEngineByMimeType("text/javascript")
   def init: Unit = {
     val entry = cfg.globalFunc.entry
     val entryCP = ControlPoint(entry, getState(entry).head match { case (tp, _) => tp })
     val initSt = getState(entryCP)
-    cpToState.clear
+    cpToState.clear()
     setState(entryCP, initSt)
     worklist.init(entryCP)
   }

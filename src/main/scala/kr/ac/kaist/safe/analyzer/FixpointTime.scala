@@ -34,7 +34,7 @@ class FixpointTime(
       iters += 1
       computeOneStep
     }
-    consoleOpt.foreach(_.runFinished)
+    consoleOpt.foreach(_.runFinished())
 
     // write duration times into log files
     Useful.writeWithFileName(blockLogFile)(writer => {

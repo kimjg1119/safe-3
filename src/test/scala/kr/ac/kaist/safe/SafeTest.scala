@@ -33,9 +33,9 @@ abstract class SafeTest extends AnyFunSuite {
   ////////////////////////////////////////////////////////////////////////////////
   // filename filters
   def extFilter(ext: String): String => Boolean = _.endsWith(s".$ext")
-  lazy val jsFilter = extFilter("js")
-  lazy val htmlFilter = extFilter("html")
-  lazy val errFilter = extFilter("err")
+  lazy val jsFilter: String => Boolean = extFilter("js")
+  lazy val htmlFilter: String => Boolean = extFilter("html")
+  lazy val errFilter: String => Boolean = extFilter("err")
 
   // normalization
   def norm(s: String): String = s.replaceAll("\\s+", "").replaceAll("\\n+", "")
@@ -43,7 +43,7 @@ abstract class SafeTest extends AnyFunSuite {
   // read a file
   def readFile(filename: String): String = {
     assert(new File(filename).exists)
-    norm(Source.fromFile(filename).getLines.mkString(LINE_SEP))
+    norm(Source.fromFile(filename).getLines().mkString(LINE_SEP))
   }
 
   // walk file tree
