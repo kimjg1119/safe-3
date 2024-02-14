@@ -14,10 +14,10 @@ package kr.ac.kaist.safe
 import java.io._
 import kr.ac.kaist.safe.phase._
 import kr.ac.kaist.safe.util._
-import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuite
 import scala.io.Source
 
-abstract class SafeTest extends FunSuite {
+abstract class SafeTest extends AnyFunSuite {
   // tests directory
   lazy val testDir = BASE_DIR + SEP + "tests" + SEP
 

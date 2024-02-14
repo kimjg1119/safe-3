@@ -51,7 +51,7 @@ lazy val root = (project in file(".")).settings(
   // },
   buildParsers in Compile := {
     // xtc
-    val xtcFile = new File("./lib/xtc.jar")
+    val xtcFile = new File(baseDirectory.value + "/lib/xtc.jar")
     if (!xtcFile.exists) {
       // TODO exception handling: not downloaded
       downloadFile(
@@ -131,8 +131,8 @@ scalacOptions in ThisBuild ++= Seq(
 )
 
 unmanagedJars in Compile ++= Seq(
-  file("lib/xtc.jar"),
-  file("lib/jericho-html-3.3.jar")
+  file(baseDirectory.value + "/lib/xtc.jar"),
+  file(baseDirectory.value + "/lib/jericho-html-3.3.jar")
 )
 cleanFiles ++= Seq(file("src/main/java/kr/ac/kaist/safe/parser/"))
 
@@ -140,8 +140,6 @@ cleanFiles ++= Seq(file("src/main/java/kr/ac/kaist/safe/parser/"))
 // https://github.com/akka/akka/pull/31823
 val AkkaVersion = "2.8.0"
 libraryDependencies ++= Seq(
-  "org.scala-lang" % "scala-library" % scalaVersion.value,
-  "org.scala-lang" % "scala-compiler" % scalaVersion.value % "scala-tool",
   "org.scalatest" %% "scalatest" % "3.2.17" % "test",
   "com.typesafe.akka" %% "akka-http" % "10.5.0",
   "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
@@ -154,7 +152,6 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4"
 )
 
-scalacOptions += "-Xsource:3"
 javacOptions ++= Seq("-encoding", "UTF-8")
 
 retrieveManaged := true
