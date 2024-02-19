@@ -66,8 +66,8 @@ object DefaultIValue extends IValueDomain {
     }
 
     def copy(
-      value: AbsValue,
-      fidset: AbsFId
+      value: AbsValue = value,
+      fidset: AbsFId = fidset
     ): Elem = Elem(value, fidset)
   }
 }

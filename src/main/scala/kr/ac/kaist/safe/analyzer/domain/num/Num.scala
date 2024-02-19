@@ -15,10 +15,6 @@ package kr.ac.kaist.safe.analyzer.domain
 case class Num(num: Double) extends PValue {
   import Num._
 
-  // constructor for Long
-  def this(long: Long) = this(long.toDouble)
-  def this(int: Int) = this(int.toDouble)
-
   // 9.8 ToString
   // 9.8.1 ToString Applied to the Number Type
   override def ToString: Str = this match {
@@ -140,4 +136,8 @@ object Num {
   val PosInf: Num = Num(Double.PositiveInfinity)
   val NegInf: Num = Num(Double.NegativeInfinity)
   private def isNegZero(k: Double): Boolean = 1 / k == Double.NegativeInfinity
+
+  // constructor for Long
+  def apply(long: Long): Num = Num(long.toDouble)
+  def apply(int: Int): Num = Num(int.toDouble)
 }

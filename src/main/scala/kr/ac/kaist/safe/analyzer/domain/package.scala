@@ -65,10 +65,18 @@ package object domain {
   implicit def booleanSet2bool(set: Set[Boolean]): Set[Bool] =
     set.map(boolean2bool)
 
+  implicit def num2int(num: Num): Int = num.num.toInt
+  implicit def int2num(num: Int): Num = Num(num)
+  implicit def intSet2num(set: Set[Int]): Set[Num] = set.map(int2num)
+
   // Double <-> Num
   implicit def num2double(num: Num): Double = num.num
   implicit def double2num(num: Double): Num = Num(num)
   implicit def doubleSet2num(set: Set[Double]): Set[Num] = set.map(double2num)
+
+  implicit def num2long(num: Num): Long = num.num.toLong
+  implicit def long2num(num: Long): Num = Num(num)
+  implicit def longSet2num(set: Set[Long]): Set[Num] = set.map(long2num)
 
   // String <-> Str
   implicit def str2string(str: Str): String = str.str
