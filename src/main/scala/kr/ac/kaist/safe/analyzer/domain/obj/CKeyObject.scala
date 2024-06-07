@@ -290,7 +290,7 @@ object CKeyObject extends ObjDomain {
         val v2 =
           if (AbsBool.False ⊑ test) {
             val protoV = currentObj(IPrototype).value
-            val v3 = protoV.pvalue.nullval.fold(valueBot)({ _ =>
+            val v3 = protoV.pvalue.nullval.fold[AbsValue](valueBot)({ _ =>
               AbsUndef.Top
             })
             v3 ⊔ protoV.locset.foldLeft(valueBot)((v, protoLoc) => {
