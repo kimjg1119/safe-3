@@ -46,7 +46,7 @@ object Helper {
           val hi = heap.propStore(l, AbsStr("length"), storeV)
           (nNewLen.getSingle, nOldLen.getSingle) match {
             case (ConOne(n1), ConOne(n2)) =>
-              (n1.toInt until n2.toInt).foldLeft(hi)((hj, i) => {
+              (num2int(n1).toInt until num2int(n2).toInt).foldLeft(hi)((hj, i) => {
                 val (tmpHeap, _) = hj.delete(l, AbsStr(i.toString))
                 tmpHeap
               })

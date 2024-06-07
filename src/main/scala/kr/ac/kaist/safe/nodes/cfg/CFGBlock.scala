@@ -30,7 +30,7 @@ sealed trait CFGBlock {
     case _ => false
   }
 
-  protected var iidCount: InstId = 0
+  var iidCount: InstId = 0
   def getIId: InstId = iidCount
 
   // edges incident with this cfg node
@@ -79,7 +79,7 @@ sealed trait CFGBlock {
   def toString(indent: Int): String = {
     val pre = "  " * indent
     val s: StringBuilder = new StringBuilder
-    s.append(pre).append(toString())
+    s.append(pre)
       .append(getSuccsStr)
       .append(LINE_SEP)
     s.toString

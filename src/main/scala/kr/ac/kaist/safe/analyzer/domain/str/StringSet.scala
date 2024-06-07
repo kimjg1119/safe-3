@@ -227,7 +227,7 @@ case class StringSet(maxSetSize: Int) extends StrDomain {
             if (d >= s.length || d < 0)
               r ⊔ AbsNum.NaN
             else {
-              val i = d.toInt
+              val i = num2int(d).toInt
               r ⊔ AbsNum(s.substring(i, i + 1).head.toInt)
             }
           })
@@ -313,7 +313,7 @@ case class StringSet(maxSetSize: Int) extends StrDomain {
       case ConInf => Top
       case ConFin(vs) =>
         vs.foldLeft[Elem](Bot)((r, v) => {
-          r ⊔ alpha("%c".format(v.toInt))
+          r ⊔ alpha("%c".format(num2int(v).toInt))
         })
     }
   }
