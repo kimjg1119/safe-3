@@ -272,7 +272,7 @@ case class CFGConstruct(
     fun: CFGExpr,
     thisArg: CFGExpr,
     arguments: CFGExpr,
-    override var asite: AllocSite // XXX should be a value but for JS model for a while.
+    var asite: AllocSite // XXX should be a value but for JS model for a while.
 ) extends CFGCallInst {
   override def toString: String = s"construct($fun, $thisArg, $arguments) @ $asite"
 }

@@ -29,9 +29,12 @@ object JsonUtil {
     mapper.writeValueAsString(value)
   }
 
-  def toMap[V](json: String): Map[String, V] = fromJson[V](json)
+  def toMap[V: Manifest](json: String): Map[String, V] = {
+    val m = Manifest.classType[Map[String, V]](classOf[Map[String, V]].asInstanceOf[Class[Map[String, V]]], manifest[String], manifest[V])
+    fromJson(json)(m)
+  }
 
-  def fromJson[V](json: String): Map[String, V] = {
-    mapper.readValue[Map[String, V]](json, classOf[Map[String, V]])
+  def fromJson[T](json: String)(implicit m: Manifest[T]): T = {
+    mapper.readValue[T](json)
   }
 }

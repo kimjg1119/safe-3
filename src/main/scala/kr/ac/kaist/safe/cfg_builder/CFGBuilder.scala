@@ -23,6 +23,6 @@ abstract class CFGBuilder(
     safeConfig: SafeConfig,
     config: CFGBuildConfig
 ) {
-  val cfg: CFG
-  val excLog: ExcLog
+  def cfg: CFG
+  def excLog: ExcLog
 }
